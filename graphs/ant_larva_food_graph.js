@@ -62,7 +62,7 @@ Graph.prototype.drawPeriod = function(ctx) {
 		this.ctx.fillText(("ant:  "+this.antData[this.antData.length-1]), this.x+this.xSize+5, yPos+10);
 
 		//larva
-		this.ctx.strokeStyle = "#CCCCCC";
+		this.ctx.strokeStyle = "#BB0000";
 		this.ctx.beginPath();
 		xPos = this.x;
 		yPos = yPos = this.mound.tick > TICK_DISPLAY ? this.y+this.ySize-Math.floor(this.larvaData[this.mound.tick-TICK_DISPLAY]/this.maxVal*this.ySize)
@@ -84,12 +84,12 @@ Graph.prototype.drawPeriod = function(ctx) {
 		this.ctx.stroke();
 		this.ctx.closePath();
 
-		this.ctx.strokeStyle = "#AAAAAA";
-		this.ctx.fillStyle = "#AAAAAA";
+		this.ctx.strokeStyle = "#BB0000";
+		this.ctx.fillStyle = "#BB0000";
 		this.ctx.fillText(("larva:"+this.larvaData[this.larvaData.length-1]), this.x+this.xSize+5, yPos+10);
 
 		//food
-		this.ctx.strokeStyle = "#000000";
+		this.ctx.strokeStyle = "#0000BB";
 
 		this.ctx.beginPath();
 		var xPos = this.x;
@@ -112,8 +112,8 @@ Graph.prototype.drawPeriod = function(ctx) {
 		this.ctx.stroke();
 		this.ctx.closePath();
 
-		this.ctx.strokeStyle = "#000000";
-		this.ctx.fillStyle = "#000000";
+		this.ctx.strokeStyle = "#0000BB";
+		this.ctx.fillStyle = "#0000BB";
 		this.ctx.fillText(("food: "+this.foodData[this.foodData.length-1]), this.x+this.xSize+5, yPos+10);
 
 		var firstTick = 0;

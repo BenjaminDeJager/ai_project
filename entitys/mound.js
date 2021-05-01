@@ -146,22 +146,22 @@ Mound.prototype.drawPeriod = function() {
 	this.ctx.fillSytle = "#000000";
 	this.ctx.font = "18px Courier";
 
-	const offsetX = 25;
+	const offsetX = 50;
 	this.ctx.fillText("Ant gen Info", 450+offsetX, 630);
 	this.ctx.fillText("Cycle Info", 700+offsetX, 630);
-	this.ctx.fillText("Season Info", 1000+offsetX, 630);
+	this.ctx.fillText("Season Info", 950+offsetX, 630);
 
-	this.ctx.font = "12px Courier";
+	this.ctx.font = "14px Courier";
 	this.ctx.fillText("Minimum Gen: " + this.minGen, 400+offsetX, 655); //minimum, average and maximum
 	this.ctx.fillText("Average Gen: " + this.averageGen, 400+offsetX, 675); //generations of the ant population
 	this.ctx.fillText("Maximum Gen: " + this.maxGen, 400+offsetX, 695);
 
-	this.ctx.fillText("Current Cycle	    : " + this.game.updateCounter, 650+offsetX, 655);
-	this.ctx.fillText("Cycles since Season: " + this.game.seasonCounter, 650+offsetX, 675);
-	this.ctx.fillText("Cycles in Season   : " + SEASON_LENGTH, 650+offsetX, 695);
+	this.ctx.fillText("Current Cycle	      : " + this.game.updateCounter, 650+offsetX, 655);
+	this.ctx.fillText("Cycles since Season : " + this.game.seasonCounter, 650+offsetX, 675);
+	this.ctx.fillText("Cycles in Season    : " + SEASON_LENGTH, 650+offsetX, 695);
 
-	this.ctx.fillText("Current Season : " + (this.game.currentSeason + 1), 950+offsetX, 655)
-	this.ctx.fillText("Seasons in Year: " + NUM_OF_SEASONS, 950+offsetX, 675)
+	this.ctx.fillText("Current Season : " + (this.game.currentSeason + 1), 900+offsetX, 655)
+	this.ctx.fillText("Seasons in Year: " + NUM_OF_SEASONS, 900+offsetX, 675)
 
 	this.ctx.font = "10px sans-serif";
 	this.graph1.drawPeriod();

@@ -61,7 +61,7 @@ Graph2.prototype.drawPeriod = function(ctx) {
 		this.ctx.fillText(("ant:  "+this.antData[this.antData.length-1]), this.x+this.xSize+50, yPos + 5);
 
 		//larva
-		this.ctx.strokeStyle = "#CCCCCC";
+		this.ctx.strokeStyle = "#BB0000";
 		this.ctx.beginPath();
 		xPos = this.x;
 		yPos = yPos = this.mound.tick > TICK_DISPLAY ? this.y+this.ySize-Math.floor(this.larvaData[this.mound.tick-TICK_DISPLAY]/this.maxVal*this.ySize)
@@ -83,13 +83,14 @@ Graph2.prototype.drawPeriod = function(ctx) {
 		this.ctx.stroke();
 		this.ctx.closePath();
 
-		this.ctx.strokeStyle = "#CCCCCC";
-		this.ctx.fillStyle = "#CCCCCC";
+		this.ctx.strokeStyle = "#BB0000";
+		this.ctx.fillStyle = "#BB0000";
 		this.ctx.fillText(("larva:"+this.larvaData[this.larvaData.length-1]), this.x+this.xSize+50, yPos + 5);
 
 		var firstTick = 0;
 		firstTick = this.mound.tick > TICK_DISPLAY ? this.mound.tick - TICK_DISPLAY : 0;
-		this.ctx.fillText(firstTick, this.x, this.y+this.ySize+10);
+		this.ctx.fillStyle = "#000000";
+		this.ctx.fillText(firstTick, this.x + 10, this.y+this.ySize+10);
 		this.ctx.textAlign = "right";
 		this.ctx.fillText(this.mound.tick-1, this.x+this.xSize-5, this.y+this.ySize+10);
 	}
