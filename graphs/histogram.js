@@ -43,7 +43,8 @@ Histogram.prototype.drawPeriod = function() {
 		this.ctx.fillText("Breed", this.x+this.xSize + 25, this.y + 10); //not sure I don't have these switched.
 		this.ctx.fillText("Forage",this.x+this.xSize + 25, this.y + this.ySize);
 	} else {
-		this.ctx.fillText("Exploit/Explore", this.x+this.xSize/2, this.y+this.ySize+10);
+		this.ctx.fillText("Exploit", this.x+this.xSize + 25, this.y + 10); //not sure I don't have these switched
+		this.ctx.fillText("Explore", this.x+this.xSize + 25, this.y + this.ySize);
 	}
 	this.ctx.strokeStyle = "#000000";
 	this.ctx.lineWidth = 1;
