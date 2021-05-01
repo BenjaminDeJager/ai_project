@@ -112,3 +112,11 @@ tttt
 ffff
 
 500x? picture pixel
+
+------------------------------
+Ben's notes
+todo:
+	1): label Graphs				(partially completed)
+	2): add comment code 		(on-going)
+	3): add social learning (still debugging)
+	4): add lazy-roll 			(not started)
