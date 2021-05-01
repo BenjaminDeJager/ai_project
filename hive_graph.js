@@ -9,9 +9,9 @@ function Graph(game, mound) {
 //	this.antData.push(mound.antCount);
 //	this.larvaData.push(mound.larvaCount);
 //	this.foodData.push(Math.floor(mound.foodStorage/EAT_AMOUNT));
-	this.maxVal = Math.max(this.antData, 
+	this.maxVal = Math.max(this.antData,
 						   this.larvaData,
-						   this.foodData); 
+						   this.foodData);
 	Entity.call(this, game, 810, 0);
 }
 
@@ -51,16 +51,16 @@ Graph.prototype.drawPeriod = function(ctx) {
 			if (yPos <= 0) {
 				yPos = 0;
 			}
-			
+
 			this.ctx.lineTo(xPos, yPos);
 		}
 		this.ctx.stroke();
 		this.ctx.closePath();
-		
-		this.ctx.strokeStyle = "#000000";
-		this.ctx.fillSytle = "#000000";
-		this.ctx.fillText(this.antData[this.antData.length-1], this.x+this.xSize+5, yPos+10);
-			
+
+		this.ctx.strokeStyle = "#00BB00";
+		this.ctx.fillStyle= "#00BB00";
+		this.ctx.fillText(("ant:  "+this.antData[this.antData.length-1]), this.x+this.xSize+5, yPos+10);
+
 		//larva
 		this.ctx.strokeStyle = "#CCCCCC";
 		this.ctx.beginPath();
@@ -68,26 +68,26 @@ Graph.prototype.drawPeriod = function(ctx) {
 		yPos = yPos = this.mound.tick > TICK_DISPLAY ? this.y+this.ySize-Math.floor(this.larvaData[this.mound.tick-TICK_DISPLAY]/this.maxVal*this.ySize)
 										   : this.y+this.ySize-Math.floor(this.larvaData[0]/this.maxVal*this.ySize);
 		this.ctx.moveTo(xPos, yPos);
-		
+
 		for (var i = 1; i < length; i++) {
 			var index = this.mound.tick > TICK_DISPLAY ?
 						this.mound.tick-TICK_DISPLAY-1+i : i;
 			xPos++;
 			yPos = this.y+this.ySize-Math.floor(this.larvaData[index]/this.maxVal*this.ySize);
-			
+
 			if (yPos <= 0) {
 				yPos = 0;
 			}
-			
+
 			this.ctx.lineTo(xPos, yPos);
 		}
 		this.ctx.stroke();
 		this.ctx.closePath();
-		
-		this.ctx.strokeStyle = "#000000";
-		this.ctx.fillSytle = "#000000";
-		this.ctx.fillText(this.larvaData[this.larvaData.length-1], this.x+this.xSize+5, yPos+10);
-		
+
+		this.ctx.strokeStyle = "#AAAAAA";
+		this.ctx.fillStyle = "#AAAAAA";
+		this.ctx.fillText(("larva:"+this.larvaData[this.larvaData.length-1]), this.x+this.xSize+5, yPos+10);
+
 		//food
 		this.ctx.strokeStyle = "#000000";
 
@@ -106,16 +106,16 @@ Graph.prototype.drawPeriod = function(ctx) {
 			if (yPos <= 0) {
 				yPos = 0;
 			}
-			
+
 			this.ctx.lineTo(xPos, yPos);
 		}
 		this.ctx.stroke();
 		this.ctx.closePath();
-		
+
 		this.ctx.strokeStyle = "#000000";
-		this.ctx.fillSytle = "#000000";
-		this.ctx.fillText(this.foodData[this.foodData.length-1], this.x+this.xSize+5, yPos+10);
-		
+		this.ctx.fillStyle = "#000000";
+		this.ctx.fillText(("food: "+this.foodData[this.foodData.length-1]), this.x+this.xSize+5, yPos+10);
+
 		var firstTick = 0;
 		firstTick = this.mound.tick > TICK_DISPLAY ? this.mound.tick - TICK_DISPLAY : 0;
 		this.ctx.fillText(firstTick, this.x, this.y+this.ySize+10);
@@ -125,7 +125,7 @@ Graph.prototype.drawPeriod = function(ctx) {
 	this.ctx.strokeStyle = "#000000";
 	this.ctx.lineWidth = 1;
 	this.ctx.strokeRect(this.x, this.y, this.xSize, this.ySize);
-	
+
 }
 
 Graph.prototype.updateMax = function() {
@@ -134,12 +134,12 @@ Graph.prototype.updateMax = function() {
 		var recentAnt = this.antData.slice(tick-TICK_DISPLAY);
 		var recentLarva = this.larvaData.slice(tick-TICK_DISPLAY);
 		var recentFood = this.foodData.slice(tick-TICK_DISPLAY);
-		
+
 		this.maxVal = Math.max(...recentAnt,
 		                       ...recentLarva,
 							   ...recentFood);
 	} else {
-		this.maxVal = Math.max(...this.antData, 
+		this.maxVal = Math.max(...this.antData,
 							   ...this.larvaData,
 							   ...this.foodData);
 	}

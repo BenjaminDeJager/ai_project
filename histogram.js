@@ -4,7 +4,7 @@ function Histogram(game, mound, x, y, gene) {
 	this.gene = gene;
 	this.ctx = game.ctx;
 	this.mound = mound;
-	this.data = [];	
+	this.data = [];
 	this.maxVal = 0;
 	Entity.call(this, game, x, y);
 }
@@ -24,9 +24,9 @@ Histogram.prototype.draw = function(ctx) {
 }
 
 Histogram.prototype.drawPeriod = function() {
-	var length = this.data.length > (this.xSize/3) ? 
+	var length = this.data.length > (this.xSize/3) ?
 				 Math.floor(this.xSize/3) : this.data.length;
-	var start = this.data.length > (this.xSize/3) ? 
+	var start = this.data.length > (this.xSize/3) ?
 				this.data.length - (this.xSize/3) : 0;
 	for (var i = 0; i < length; i++) {
 		var maxVal = this.data[i+start].reduce(function(acc, x) {
@@ -40,7 +40,8 @@ Histogram.prototype.drawPeriod = function() {
 	this.ctx.fillStyle = "#000000";
 	this.ctx.textAlign = "center";
 	if (this.gene === 0) {
-		this.ctx.fillText("Breed/Forage", this.x+this.xSize/2, this.y+this.ySize+10);
+		this.ctx.fillText("Breed", this.x+this.xSize + 25, this.y + 10);
+		this.ctx.fillText("Forage",this.x+this.xSize + 25, this.y + this.ySize);
 	} else {
 		this.ctx.fillText("Exploit/Explore", this.x+this.xSize/2, this.y+this.ySize+10);
 	}
@@ -49,6 +50,7 @@ Histogram.prototype.drawPeriod = function() {
 	this.ctx.strokeRect(this.x, this.y, this.xSize, this.ySize);
 }
 
+//(ben) used by the simulation I think? cas the histogram doesn't use colors...
 Histogram.prototype.fill = function(color, x, y) {
 	switch(color) {
 		case 0:
@@ -117,7 +119,7 @@ Histogram.prototype.fill = function(color, x, y) {
 	}
 	var width = Math.floor(this.xSize/120);
 	var height = Math.floor(this.ySize/20);
-	this.ctx.fillRect(this.x+(x*width), 
+	this.ctx.fillRect(this.x+(x*width),
 		              this.y+(y*height),
 				      width,
 					  height);

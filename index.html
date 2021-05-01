@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
-<head> 
+<head>
     <meta charset="utf-8">
 	<title>Division of Labor in Ants</title>
 	<!-- <script type="text/javascript" src="http://24.16.255.56:8888/socket.io/socket.io.js"></script>  -->
@@ -11,7 +11,7 @@
 	<script type="text/javascript" src="./tile.js"></script>
 	<script type="text/javascript" src="./larva.js"></script>
 	<script type="text/javascript" src="./ant.js"></script>
-	<script type="text/javascript" src="./graph.js"></script>
+	<script type="text/javascript" src="./hive_graph.js"></script>
 	<script type="text/javascript" src="./graph2.js"></script>
 	<script type="text/javascript" src="./histogram.js"></script>
 	<script type="text/javascript" src="./mound.js"></script>
@@ -37,9 +37,9 @@
 	</script>
 </head>
 <body onload="setupSeasons(document.getElementById('seasons').value)">
-	<p id="runName">s-f2-b5-ft-ftt-tttt</p> 
+	<p id="runName">s-f2-b5-ft-ftt-tttt</p>
 	<p id="filename">Run#<span id="runNum">1</span></p>
-    <canvas id="gameWorld" tabindex="1" width="1200" height="800" style="border: 1px solid brown; background: white"></canvas>
+    <canvas id="gameWorld" tabindex="1" width="1250" height="800" style="border: 1px solid brown; background: white"></canvas>
 	<br>
 	<div id="sim">
 		<button id="new">New Sim</button>
@@ -49,7 +49,7 @@
 	</div>
 	<div id="environment">
         <p>Environment Parameters</p>
-		
+
         <input type="text" id="cellSize" value="10"/>Cell Size<br />
 		<input type="text" id="runCount" value="10"/>Max Run Count<br />
         <input type="text" id="simDuration" value="200000"/>Simulation Duration<br />
@@ -61,7 +61,7 @@
 
 		<input type="text" id="seasons" onChange="setupSeasons(this.value)" value="1"/>Number of Seasons
 		<div id="seasonDiv">
-			
+
 		</div>
         <button id="save">Save</button>
 		<button id="load">Load</button>
@@ -91,12 +91,12 @@
 		<input type="text" id="forageWeight" value="2" />Forage Weight<br />
 		<input type="text" id="breedWeight" value="7" />Breed Weight<br />
 		<input type="text" id="breedAge" value="100" />Age requirement To Breed <input type="checkbox" id="breedAgeToggle" /><br />
-		
+
 		<input type="text" id="standbyPenalty" value="0.1" />Breeder Standby Penalty
 		<input type="checkbox" id="standbyPenaltyToggle" />
 		<br />
 		<input type="text" id="standbyThreshold" value="100" />Max Standby Threshold <br />
-		
+
 		<input type="text" id="minDeathChance" value="0.0001" />Minimum Chance To Die<br />
 		<input type="text" id="maxDeathChance" value="0.01" />Maximum Chance To Die<br />
 		<input type="text" id="minAge" value="100" />Minimum Age<br />
@@ -110,7 +110,7 @@
         <input type="text" id="energyDecay" value="5" />Energy Decay<br />
 		<input type="text" id="matureTime" value="100" />Larva Maturation In Cycles<br />
 	</div>
-	
+
 	<p>
 		<a href="showGraphs.html">Graphs</a>
 	</p>

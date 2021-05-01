@@ -57,13 +57,13 @@ Mound.prototype.update = function() {
 		}
 		*/
 		this.game.runNextSetting();
-	}	
+	}
 
 	//console.log("Standby: " + this.standby.length);
 	if (RANDOM_OR_QUEUE_TOGGLE) {
 		while (this.canGrow() && this.standby.length > 0) {
 			var size = this.standby.length;
-			
+
 			var rng = Math.floor(size * Math.random());
 			this.standby[rng].eggLay();
 			this.standby.splice(rng, 1);
@@ -74,7 +74,7 @@ Mound.prototype.update = function() {
 			this.standby.shift();
 		}
 	}
-	
+
 
 	if (BREEDER_PENALTY_TOGGLE) {
 		for (var i = 0; i < this.standby.length; i++) {
@@ -97,7 +97,7 @@ Mound.prototype.update = function() {
 	}
 }
 
-Mound.prototype.updatePeriod = function() {	
+Mound.prototype.updatePeriod = function() {
 	this.tick++;
 	this.larvaPeriodData.push(this.larvaPeriod);
 	this.larvaPeriod = 0;
@@ -115,11 +115,11 @@ Mound.prototype.updatePeriod = function() {
 
 	console.log("Tick #:" + this.tick +
 				" Cycle #:" + this.lifeTimeCount +
-				" Ant:" + this.antCount + 
-				" Larva:" + this.larvaCount + 
+				" Ant:" + this.antCount +
+				" Larva:" + this.larvaCount +
 				" Food:" + this.foodStorage);
 	console.log("Min Gen:" + this.minGen +
-				" Avg Gen:" + this.averageGen + 
+				" Avg Gen:" + this.averageGen +
 				" Max Gen:" + this.maxGen);
 	console.log(`Avg Breeder Age: ${this.averageAges.breeders}`);
 	console.log(`Avg Generalist Age: ${this.averageAges.generalists}`);
@@ -135,7 +135,7 @@ Mound.prototype.updatePeriod = function() {
 
 Mound.prototype.draw = function() {
 	this.ctx.fillStyle = "green";
-	
+
 	this.ctx.fillRect(this.x, this.y, CELL_SIZE, CELL_SIZE);
 	this.ctx.fillStyle = "black";
 	this.ctx.strokeRect(this.x, this.y, CELL_SIZE, CELL_SIZE);
@@ -144,11 +144,24 @@ Mound.prototype.draw = function() {
 Mound.prototype.drawPeriod = function() {
 	this.ctx.strokeStyle = "#000000";
 	this.ctx.fillSytle = "#000000";
-	this.ctx.font = "20px Courier";
-	this.ctx.fillText("Min Gen:" + this.minGen,600, 630);
-	this.ctx.fillText("Average Gen:" + this.averageGen,600, 650);
-	this.ctx.fillText("Max Gen:" + this.maxGen,600, 670);
-	this.ctx.fillText("Cycle# :" + this.lifeTimeCount,600, 690);
+	this.ctx.font = "18px Courier";
+
+	this.ctx.fillText("Ant gen Info", 450, 630);
+	this.ctx.fillText("Cycle Info", 700, 630);
+	this.ctx.fillText("Season Info", 1000, 630);
+
+	this.ctx.font = "12px Courier";
+	this.ctx.fillText("Minimum Gen: " + this.minGen, 400, 655); //minimum, average and maximum
+	this.ctx.fillText("Average Gen: " + this.averageGen, 400, 675); //generations of the ant population
+	this.ctx.fillText("Maximum Gen: " + this.maxGen, 400, 695);
+
+	this.ctx.fillText("Current Cycle	    : " + this.game.updateCounter, 650, 655);
+	this.ctx.fillText("Cycles since Season: " + this.game.seasonCounter, 650, 675);
+	this.ctx.fillText("Cycles in Season   : " + SEASON_LENGTH, 650, 695);
+
+	this.ctx.fillText("Current Season : " + (this.game.currentSeason + 1), 950, 655)
+	this.ctx.fillText("Seasons in Year: " + NUM_OF_SEASONS, 950, 675)
+
 	this.ctx.font = "10px sans-serif";
 	this.graph1.drawPeriod();
 	this.graph2.drawPeriod();
@@ -188,37 +201,37 @@ Mound.prototype.spawnAnt = function() {
 	var randomAnt = this.breedable[Math.floor(this.breedable.length*Math.random())];
 	var ant;
 	if (randomAnt === undefined) {
-		ant = new Ant(this.game, 
-					  Math.round(XSIZE/2)-1, 
-				  	  Math.round(YSIZE/2)-1, 
-					  this.colony, 
+		ant = new Ant(this.game,
+					  Math.round(XSIZE/2)-1,
+				  	  Math.round(YSIZE/2)-1,
+					  this.colony,
 					  this.tiles,
 					  this,
 					  0.5,
 					  1,
 					  0);
 	} else if (Math.random() < MUTATION_RATE) {
-		ant = new Ant(this.game, 
-					  Math.round(XSIZE/2)-1, 
-				  	  Math.round(YSIZE/2)-1, 
-					  this.colony, 
+		ant = new Ant(this.game,
+					  Math.round(XSIZE/2)-1,
+				  	  Math.round(YSIZE/2)-1,
+					  this.colony,
 					  this.tiles,
 					  this,
 					  randomAnt.geneRole + dev,
 					  randomAnt.geneForage + dev2,
 					  randomAnt.generation + 1);
 	} else {
-		ant = new Ant(this.game, 
-					  Math.round(XSIZE/2)-1, 
-				  	  Math.round(YSIZE/2)-1, 
-					  this.colony, 
+		ant = new Ant(this.game,
+					  Math.round(XSIZE/2)-1,
+				  	  Math.round(YSIZE/2)-1,
+					  this.colony,
 					  this.tiles,
 					  this,
 					  randomAnt.geneRole,
 					  randomAnt.geneForage,
 					  randomAnt.generation + 1);
 	}
-	
+
 	this.colony.push(ant);
 	this.game.addEntity(ant);
 	this.antCount++;
@@ -240,7 +253,7 @@ Mound.prototype.spawnLarva = function(parent) {
 }
 Mound.prototype.removeLarva = function(larva) {
 	var colIndex = this.colony.indexOf(larva);
-	this.larvae.splice(colIndex, 1); 
+	this.larvae.splice(colIndex, 1);
 	this.game.removeEntity(larva);
 	this.larvaCount--;
 }
@@ -255,7 +268,7 @@ Mound.prototype.updateRoleHistogram = function() {
 	for (var i = 0; i < 20; i++) {
 		roleHistogram.push(0);
 	}
-	for (var i = 0; i < this.colony.length; i++) {		
+	for (var i = 0; i < this.colony.length; i++) {
 		var ant = this.colony[i];
 		if (ant.geneRole <= 0.05) {
 			roleHistogram[0]++;
@@ -308,7 +321,7 @@ Mound.prototype.updateForageHistogram = function() {
 	for (var i = 0; i < 20; i++) {
 		histogram.push(0);
 	}
-	for (var i = 0; i < this.colony.length; i++) {		
+	for (var i = 0; i < this.colony.length; i++) {
 		var ant = this.colony[i];
 		if (ant.geneForage <= 0.05) {
 			histogram[0]++;
@@ -359,16 +372,16 @@ Mound.prototype.updateForageHistogram = function() {
 Mound.prototype.updateBreedableAnts = function() {
 	var breed = [];
 	var breed2 = [];
-	
+
 	// first pass to get better half
 	var cutoff = this.getAverageFitness(this.getBreedableAnts());
 	for (var i = 0; i < this.colony.length; i++) {
-		if (this.colony[i] !== undefined && 
+		if (this.colony[i] !== undefined &&
 			this.colony[i].overallFitness >= cutoff) {
 			breed.push(this.colony[i]);
 		}
 	}
-	
+
 	// second pass to get the best quarter
 	var cutoff2 = this.getAverageFitness(breed);
 	for (var i = 0; i < breed.length; i++) {
@@ -384,7 +397,7 @@ Mound.prototype.updateBreedableAnts = function() {
 Mound.prototype.getAverageFitness = function(arr) {
 	var total = 0;
 	var count = 0;
-	
+
 	for (var i = 0; i < arr.length; i++) {
 		if (arr[i] !== undefined) {
 			total += arr[i].overallFitness;
@@ -410,17 +423,17 @@ Mound.prototype.getBreedableAnts = function() {
 
 Mound.prototype.updateGeneration = function() {
 	var total = 0;
-	
+
 	for (var i = 0; i < this.colony.length; i++) {
 		if (this.colony[i] !== undefined) {
 			total += this.colony[i].generation;
 		}
 	}
-	
+
 	if (this.colony.length > 0) {
 		var average = total/this.colony.length;
 		this.averageGen = Math.round(average);
-	
+
 		this.minGen = this.colony.reduce(function(min, cur) {
 			return cur.generation < min.generation ? cur : min;
 		}).generation;
