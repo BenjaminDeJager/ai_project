@@ -1,0 +1,114 @@
+todo
+
+fitness function for both role and forage pattern (exploit/explore)
+
+a(food/time) + b(babies/time)
+
+sum fitness / num ants
+
+pick random from better half of colony
+
+min values have their own parameters
+
+heatmap for histogram.
+histogram on its height. 3d-ish
+
+generation count.
+----------------
+graph for min/avg/max generation
+
+toggle gene scaling
+<.5
+gene scaling p(forage) = gene^2 * 2
+p(breed) = 1 - p(forage)
+
+>.5
+p(breed) = (1-gene)^2 * 2
+p(forage) = 1-p(breed)
+
+same for exploit/explore
+and other stats
+
+breeding condition toggle
+------------------------------
+toggle benefits/drawback of gene
+
+make sure that total food in environment is equal. have a parameter to set value
+
+implement download function from existing project. algorithm0r
+download and restart sim
+
+--------------------------------
+
+merge file  averages(python)
+graph (Excel for now)
+toggle something (hopefully i remember)
+entice breeders to breed (time out/ wait)
+toggle breed successful
+
+--------------------------------
+
+peg
+
+paper
+wed/friday at the latest
+
+technical and scenarios
+quick intro/conclusion
+
+---------------------------------
+data object = {
+id:{params:values
+	test or not}
+pop:[]
+larva:[]
+food:[]
+breed:[[]]
+forage:[[]]
+
+penalize waiting - toggle, parameter
+lengthening lifespan of breeders - toggle
+breed from pool of breeders - toggle
+
+
+
+second page for analyzing data
+-------------------------------
+min-max chance to die
+decouple benefits toggle
+dense&sparse
+not dense&many
+fast breed - on,off
+more energy - on,off
+carry more - on,off
+live longer - on,off
+quad toggle - on,off
+x5 on all runs
+32 x 5 = 160
+------------------------------
+queue - random breeder
+different way of fitness function
+max of forage/breed as fitness
+toggle min age to breed
+
+-----------------------------
+climbinggiants.com/gs/analyze.html
+normalize
+different environment
+
+------------------------------
+
+extreme genes all false
+breeder live longer sparse
+work on sparse to dense environment.
+
+dump file to download
+python to draw graphs
+tttt 1 - 3
+fftt 2 - 7
+
+dense
+tttt
+ffff
+
+500x? picture pixel
