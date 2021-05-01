@@ -116,7 +116,8 @@ ffff
 ------------------------------
 Ben's notes
 todo:
-	1): label Graphs				(partially completed)
+	1a): label Graphs				(mostly completed)
+	1b): re-factor graph2 to be environmental data and convert "simulation duration" to "number of years".
 	2): add comment code 		(on-going)
 	3): add social learning (still debugging)
 	4): add lazy-roll 			(not started)
