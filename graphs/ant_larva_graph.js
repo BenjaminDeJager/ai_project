@@ -12,7 +12,7 @@ function Graph2(game, mound) {
 	this.maxVal = Math.max(this.antData,
 						   this.larvaData,
 						   this.foodData);
-	Entity.call(this, game, 0, 605);
+	Entity.call(this, game, 810, 0);
 }
 
 Graph2.prototype.update = function () {
