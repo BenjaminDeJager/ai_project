@@ -113,24 +113,26 @@ Mound.prototype.updatePeriod = function() {
 	this.forageHistogramData.updatePeriod();
 	this.calculateAvgAges();
 
-	console.log("Tick #:" + this.tick +
-				" Cycle #:" + this.lifeTimeCount +
-				" Ant:" + this.antCount +
-				" Larva:" + this.larvaCount +
-				" Food:" + this.foodStorage);
-	console.log("Min Gen:" + this.minGen +
-				" Avg Gen:" + this.averageGen +
-				" Max Gen:" + this.maxGen);
-	console.log(`Avg Breeder Age: ${this.averageAges.breeders}`);
-	console.log(`Avg Generalist Age: ${this.averageAges.generalists}`);
-	console.log(`Avg Forager Age: ${this.averageAges.foragers}`);
-	console.log(`Avg Age: ${this.averageAges.total}`);
-	/*
-	console.log("Food Total: " + foods);
-	console.log("Standby Total: " + this.standby.length);
-	console.log("Food Foraged: " + this.foragePeriod);
-	console.log("Larva Created: " + this.larvaPeriod);
-	*/
+	if(PRINT_RESULTS) {
+		console.log("Tick #:" + this.tick +
+					" Cycle #:" + this.lifeTimeCount +
+					" Ant:" + this.antCount +
+					" Larva:" + this.larvaCount +
+					" Food:" + this.foodStorage);
+		console.log("Min Gen:" + this.minGen +
+					" Avg Gen:" + this.averageGen +
+					" Max Gen:" + this.maxGen);
+		console.log(`Avg Breeder Age: ${this.averageAges.breeders}`);
+		console.log(`Avg Generalist Age: ${this.averageAges.generalists}`);
+		console.log(`Avg Forager Age: ${this.averageAges.foragers}`);
+		console.log(`Avg Age: ${this.averageAges.total}`);
+		/*
+		console.log("Food Total: " + foods);
+		console.log("Standby Total: " + this.standby.length);
+		console.log("Food Foraged: " + this.foragePeriod);
+		console.log("Larva Created: " + this.larvaPeriod);
+		*/
+	}
 }
 
 Mound.prototype.draw = function() {
@@ -313,7 +315,9 @@ Mound.prototype.updateRoleHistogram = function() {
 			roleHistogram[19]++;
 		}
 	}
-	console.log("breed/forage: " + roleHistogram);
+	if(PRINT_RESULTS) {
+		console.log("breed/forage: " + roleHistogram);
+	}
 	this.roleHistogram = roleHistogram;
 }
 
@@ -366,7 +370,9 @@ Mound.prototype.updateForageHistogram = function() {
 			histogram[19]++;
 		}
 	}
-	console.log("exploit/explore: " + histogram);
+	if(PRINT_RESULTS) {
+		console.log("exploit/explore: " + histogram);
+	}
 	this.forageHistogram = histogram;
 }
 
