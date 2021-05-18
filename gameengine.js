@@ -97,11 +97,14 @@ GameEngine.prototype.init = function (ctx) {
 	this.step = document.getElementById("step");
 	this.save = document.getElementById("save");
 	this.load = document.getElementById("load");
+
 	this.newMap = document.getElementById("newMap");
 	this.new = document.getElementById("new");
 	this.newAnt = document.getElementById("newAnt");
-    this.surfaceWidth = this.ctx.canvas.width;
-    this.surfaceHeight = this.ctx.canvas.height;
+
+  this.surfaceWidth = this.ctx.canvas.width;
+  this.surfaceHeight = this.ctx.canvas.height;
+
 	this.timer = new Timer();
 	this.settings = this.setSettings();
 	this.currentSetting = -1;
