@@ -40,7 +40,7 @@ var RANDOM_OR_QUEUE_TOGGLE = true;
 var SUM_OR_MAX_FITNESS_TOGGLE = true;
 var ROLE_GENE_TOGGLE = true;
 
-var MENE_TOGGLE = true;
+var MENE_TOGGLE = false;
 var MENOME_MUTATE_TOGGLE = true;
 var MENE_MUTATE_RATE = 0.1;
 
@@ -106,3 +106,6 @@ var SEASON_LENGTH = 0;
 
 var MAX_TOTAL_FOOD = 0;
 var FOOD_DENSITY = 0;
+
+var PRINT_RESULTS = false;
+var DOWNLOAD_RESULTS = false;

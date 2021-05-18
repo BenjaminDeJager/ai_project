@@ -12,8 +12,8 @@ AM.downloadAll(function () {
 	XSIZE = Math.floor(800/CELL_SIZE);
 	YSIZE = Math.floor(600/CELL_SIZE);
 
-    gameEngine.init(ctx);
+  gameEngine.init(ctx);
 	gameEngine.start();
 
-    console.log("All Done!");
+  console.log("All Done!");
 });
