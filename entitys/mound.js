@@ -273,47 +273,24 @@ Mound.prototype.updateRoleHistogram = function() {
 	}
 	for (var i = 0; i < this.colony.length; i++) {
 		var ant = this.colony[i];
-		if (ant.geneRole <= 0.05) {
-			roleHistogram[0]++;
-		} else if (ant.geneRole <= 0.1) {
-			roleHistogram[1]++;
-		} else if (ant.geneRole <= 0.15) {
-			roleHistogram[2]++;
-		} else if (ant.geneRole <= 0.20) {
-			roleHistogram[3]++;
-		} else if (ant.geneRole <= 0.25) {
-			roleHistogram[4]++;
-		} else if (ant.geneRole <= 0.3) {
-			roleHistogram[5]++;
-		} else if (ant.geneRole <= 0.35) {
-			roleHistogram[6]++;
-		} else if (ant.geneRole <= 0.4) {
-			roleHistogram[7]++;
-		} else if (ant.geneRole <= 0.45) {
-			roleHistogram[8]++;
-		} else if (ant.geneRole <= 0.5) {
-			roleHistogram[9]++;
-		} else if (ant.geneRole <= 0.55) {
-			roleHistogram[10]++;
-		} else if (ant.geneRole <= 0.6) {
-			roleHistogram[11]++;
-		} else if (ant.geneRole <= 0.65) {
-			roleHistogram[12]++;
-		} else if (ant.geneRole <= 0.7) {
-			roleHistogram[13]++;
-		} else if (ant.geneRole <= 0.75) {
-			roleHistogram[14]++;
-		} else if (ant.geneRole <= 0.8) {
-			roleHistogram[15]++;
-		} else if (ant.geneRole <= 0.85) {
-			roleHistogram[16]++;
-		} else if (ant.geneRole <= 0.9) {
-			roleHistogram[17]++;
-		} else if (ant.geneRole <= 0.95) {
-			roleHistogram[18]++;
+
+		//we want a function that converts a particular ant.geneRole real
+		//in the range [0,1] to a integer between [0, 19] based on what multiple of
+		//0.05 they are (starting at 0).
+
+		//so if we multiply by 20 to to get [0,20] then floor/truc we get what we want.
+		// I tested this and out of 20 million Math.random real-values
+		//in the range [0,1), exactly NONE came out different from the if-else tree.
+
+		//there is the potential that a ant with a antgene of exactly 1.0 getting mapped
+		//to 20 however, so I wrapped with a try-catch and it should even match
+		//the behavior of throwing all errors into the same bin.
+		if(ant.geneRole >= 0 && ant.geneRole < 1) {
+			roleHistogram[Math.trunc(ant.geneRole*20)]++;
 		} else {
 			roleHistogram[19]++;
 		}
+
 	}
 	if(PRINT_RESULTS) {
 		console.log("breed/forage: " + roleHistogram);
@@ -328,44 +305,9 @@ Mound.prototype.updateForageHistogram = function() {
 	}
 	for (var i = 0; i < this.colony.length; i++) {
 		var ant = this.colony[i];
-		if (ant.geneForage <= 0.05) {
-			histogram[0]++;
-		} else if (ant.geneForage <= 0.1) {
-			histogram[1]++;
-		} else if (ant.geneForage <= 0.15) {
-			histogram[2]++;
-		} else if (ant.geneForage <= 0.20) {
-			histogram[3]++;
-		} else if (ant.geneForage <= 0.25) {
-			histogram[4]++;
-		} else if (ant.geneForage <= 0.3) {
-			histogram[5]++;
-		} else if (ant.geneForage <= 0.35) {
-			histogram[6]++;
-		} else if (ant.geneForage <= 0.4) {
-			histogram[7]++;
-		} else if (ant.geneForage <= 0.45) {
-			histogram[8]++;
-		} else if (ant.geneForage <= 0.5) {
-			histogram[9]++;
-		} else if (ant.geneForage <= 0.55) {
-			histogram[10]++;
-		} else if (ant.geneForage <= 0.6) {
-			histogram[11]++;
-		} else if (ant.geneForage <= 0.65) {
-			histogram[12]++;
-		} else if (ant.geneForage <= 0.7) {
-			histogram[13]++;
-		} else if (ant.geneForage <= 0.75) {
-			histogram[14]++;
-		} else if (ant.geneForage <= 0.8) {
-			histogram[15]++;
-		} else if (ant.geneForage <= 0.85) {
-			histogram[16]++;
-		} else if (ant.geneForage <= 0.9) {
-			histogram[17]++;
-		} else if (ant.geneForage <= 0.95) {
-			histogram[18]++;
+		//see comments for roleHistogram above.
+		if(ant.geneForage >= 0 && ant.geneForage < 1) {
+			histogram[Math.trunc(ant.geneForage*20)]++;
 		} else {
 			histogram[19]++;
 		}

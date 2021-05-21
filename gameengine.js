@@ -30,62 +30,16 @@ function GameEngine() {
 	this.new = null;
 	this.newAnt = null;
 	this.mound = null;
-	this.avgAges = [
-		{
+	this.avgAges = [];
+  for(var i = 0; i<9;i++) {
+    this.avgAges.push({
 			breeders: [],
 			generalists: [],
 			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-	];
+			total: []
+		});
+  };
+
 	this.runNum = 0;
 }
 
@@ -108,62 +62,15 @@ GameEngine.prototype.init = function (ctx) {
 	this.timer = new Timer();
 	this.settings = this.setSettings();
 	this.currentSetting = -1;
-	this.avgAges = [
-		{
+  this.avgAges = [];
+  for(var i = 0; i<9;i++) {
+    this.avgAges.push({
 			breeders: [],
 			generalists: [],
 			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-		{
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: [],
-		},
-	];
+			total: []
+		});
+  };
 	this.runNum = 0;
 	document.getElementById("seasonDiv").innerHTML = "Season 1<br />" +
 	"<input type='text' id='seasonLength1' value='1000'/>Length<br />" +
@@ -180,6 +87,23 @@ GameEngine.prototype.init = function (ctx) {
         console.log("Socket connected.")
 	});
 	*/
+
+  this.popGraph = new LineGraph(this,
+    0, 1170, //location of top left corner
+    360, 180, //xSize, ySize
+    [
+      { pointer: this.mound.antCount,
+        color: "red",
+        history: []
+      },
+      {
+        pointer: this.mound.larvaCount,
+        color: "green",
+        history: []
+      }
+    ]);
+  this.addEntity(this.popGraph);
+
   console.log('sim initialized');
 }
 
@@ -344,7 +268,8 @@ GameEngine.prototype.setup = function() {
 		}
 	}
 	this.mound = squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome();
-	this.mound.setTiles(squares);
+  this.mound.tiles = squares;
+	// (pretty sure this is not how you have to do this) this.mound.setTiles(squares);
 	/*
 	this.addEntity(this.mound.roleHistogramData);
 	this.addEntity(this.mound.forageHistogramData);
@@ -854,18 +779,6 @@ GameEngine.prototype.loop = function () {
 		this.updatePeriod();
 		this.draw();
 		this.drawPeriod();
-
-		/*
-		if (this.timer.simTime % 0.05 > 0.025 && !this.ticked) {
-			this.update();
-			this.draw();
-			this.ticked = true;
-			//console.log("tick");
-		} else if (this.timer.simTime % 0.05 <= 0.025 && this.ticked){
-			this.ticked = false;
-			//console.log("tock");
-		}
-		*/
 	}
 
 
