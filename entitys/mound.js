@@ -1,19 +1,25 @@
 function Mound(game, xPos, yPos) {
 	this.game = game;
 	this.ctx = game.ctx;
+
 	this.xPos = xPos;
 	this.yPos = yPos;
+
 	this.antCount = 0;
 	this.larvaCount = 0;
+
 	this.foodStorage = 0;
 	this.lifeTimeCount = 0;
 	this.tick = 0;
+
 	this.colony = [];
 	this.breedable = [];
 	this.standby = [];
 	this.larvae = [];
+
 	this.roleHistogram = [];
 	this.forageHistogram = [];
+
 	this.deathAges = {
 		breeders: [],
 		generalists: [],
@@ -25,15 +31,19 @@ function Mound(game, xPos, yPos) {
 		foragers: 0,
 		total: 0,
 	};
+
 	this.averageGen = 0;
 	this.minGen = 0;
 	this.maxGen = 0;
+
 	this.graph1 = new Graph(game, this);
 	this.graph2 = new Graph2(game, this);
 	this.roleHistogramData = new Histogram(game, this, 810, 200, 0);
 	this.forageHistogramData = new Histogram(game, this, 810, 400, 1);
+
 	this.larvaPeriod = 0;
 	this.larvaPeriodData = [];
+
 	this.foragePeriod = 0;
 	this.foragePeriodData = [];
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);

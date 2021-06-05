@@ -39,7 +39,6 @@ function LineGraph(game, x, y, xSize, ySize, fieldTuples/*, tickStart, tickEnd*/
     xSize, ySize,
     fieldTuples/*,
     tickStart, tickEnd*/});
-  console.log("hi");
 
   //remember that fieldtuples should be a array of literals in the form {field, color}
   //these will be used as the "history" when graphing by pulling the latest value
@@ -63,6 +62,8 @@ function LineGraph(game, x, y, xSize, ySize, fieldTuples/*, tickStart, tickEnd*/
 
   this.tickStart = 360; //360 ticks behind the present.
   this.tickEnd = 0; //graph ends at present.
+
+  this.totalTime = 0;
 
   //the apply method allows for a function to be called across
   //all values of a given array from a particular reference (being null here)
@@ -88,7 +89,8 @@ LineGraph.prototype.updatePeriod = function() {
 
   // we want to store the game-time, or "tick" in which
   //these values were taken.
-  this.tickHistory.push(this.game.clockTick);
+  this.totalTime += this.game.clockTick;
+  this.tickHistory.push(this.game.update);
   //might run into issues if the game is paused.
   //might need testing for that and add second timer.
 }

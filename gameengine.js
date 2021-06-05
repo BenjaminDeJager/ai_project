@@ -88,22 +88,6 @@ GameEngine.prototype.init = function (ctx) {
 	});
 	*/
 
-  this.popGraph = new LineGraph(this,
-    0, 1170, //location of top left corner
-    360, 180, //xSize, ySize
-    [
-      { pointer: this.mound.antCount,
-        color: "red",
-        history: []
-      },
-      {
-        pointer: this.mound.larvaCount,
-        color: "green",
-        history: []
-      }
-    ]);
-  this.addEntity(this.popGraph);
-
   console.log('sim initialized');
 }
 
@@ -549,6 +533,22 @@ GameEngine.prototype.newGame = function() {
 	foodTotal = 0;
     this.setParameters();
 	this.setup();
+  this.popGraph = new LineGraph(this,
+    0, 1170, //location of top left corner
+    360, 180, //xSize, ySize
+    [
+      { pointer: this.mound.antCount,
+        color: "red",
+        history: [] //pull array from a "top-level" history array (in mound atm, move to game engine?)
+        //at end of experiment, a "data manager" can manage the storage of data in server.
+      },
+      {
+        pointer: this.mound.larvaCount,
+        color: "green",
+        history: []
+      }
+    ]);
+  this.addEntity(this.popGraph);
 	this.resumeGame();
 }
 
@@ -714,11 +714,12 @@ GameEngine.prototype.update = function () {
 		this.changeSeason();
 	}
 
-    var entitiesCount = this.entities.length;
+  var entitiesCount = this.entities.length;
 
-    for (var i = 0; i < entitiesCount; i++) {
-        var entity = this.entities[i];
-		if (entity != undefined) {
+  for (var i = 0; i < entitiesCount; i++) {
+    var entity = this.entities[i];
+
+    if (entity != undefined) {
 			entity.update();
 		}
 	}
@@ -802,23 +803,30 @@ GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, 
 		params: {
 			maxFood: document.getElementById("maxFood").value,
 			maxTotalFood: document.getElementById("maxTotalFood").value,
+
 			geneToggle: document.getElementById("geneToggle").checked,
 			breedToggle: document.getElementById("breedToggle").checked,
+
 			randOrQueueToggle: document.getElementById("randomOrQueueToggle").checked,
 			sumOrMaxToggle: document.getElementById("sumOrMaxToggle").checked,
+
 			geneLifeToggle: document.getElementById("geneLifeToggle").checked,
 			geneBreedSpeedToggle: document.getElementById("geneBreedSpeedToggle").checked,
 			geneFoodCarryToggle: document.getElementById("geneFoodCarryToggle").checked,
 			geneEnergyToggle: document.getElementById("geneEnergyToggle").checked,
+
 			breedStandby: document.getElementById("breedStandby").checked,
 			forageWeight: document.getElementById("forageWeight").value,
 			breedWeight: document.getElementById("breedWeight").value
 		},
+
 		ants: graph1.antData,
 		larva: graph1.larvaData,
 		food: graph1.foodData,
+
 		roleHistogram: hist1.data,
 		forageHistogram: hist2.data,
+
 		foragePeriod: mound.foragePeriodData,
 		larvaPeriod: mound.larvaPeriodData
 	};
