@@ -32,6 +32,7 @@ Graph2.prototype.drawPeriod = function(ctx) {
 
 	if (this.antData.length > 1) {
 		//ant
+		this.ctx.save();
 		this.ctx.strokeStyle = "#00BB00";
 		this.ctx.lineWidth = 2;
 
@@ -58,7 +59,7 @@ Graph2.prototype.drawPeriod = function(ctx) {
 
 		this.ctx.strokeStyle = "#00BB00";
 		this.ctx.fillStyle = "#00BB00";
-		this.ctx.fillText(("ant:  "+this.antData[this.antData.length-1]), this.x+this.xSize+50, yPos + 5);
+		this.ctx.fillText(("ant:  "+this.antData[this.antData.length-1]), this.x+this.xSize + 80, yPos + 10);
 
 		//larva
 		this.ctx.strokeStyle = "#BB0000";
@@ -85,14 +86,15 @@ Graph2.prototype.drawPeriod = function(ctx) {
 
 		this.ctx.strokeStyle = "#BB0000";
 		this.ctx.fillStyle = "#BB0000";
-		this.ctx.fillText(("larva:"+this.larvaData[this.larvaData.length-1]), this.x+this.xSize+50, yPos + 5);
+		this.ctx.fillText(("larva:"+this.larvaData[this.larvaData.length-1]), this.x+this.xSize + 80, yPos + 10);
 
 		var firstTick = 0;
 		firstTick = this.mound.tick > TICK_DISPLAY ? this.mound.tick - TICK_DISPLAY : 0;
 		this.ctx.fillStyle = "#000000";
-		this.ctx.fillText(firstTick, this.x + 10, this.y+this.ySize+10);
+		this.ctx.fillText(firstTick, this.x + 15, this.y+this.ySize+10);
 		this.ctx.textAlign = "right";
 		this.ctx.fillText(this.mound.tick-1, this.x+this.xSize-5, this.y+this.ySize+10);
+		this.ctx.restore();
 	}
 	this.ctx.strokeStyle = "#000000";
 	this.ctx.lineWidth = 1;

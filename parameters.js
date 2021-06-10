@@ -8,8 +8,6 @@ var CHART_X = 400;
 var CHART_Y = 600;
 var CHART_BOTTOM_Y = 200;
 
-var SIMPLE_INFO = false;
-
 var TICK_DISPLAY = 360;
 
 var NORTH = 0;
@@ -109,5 +107,8 @@ var SEASON_LENGTH = 0;
 var MAX_TOTAL_FOOD = 0;
 var FOOD_DENSITY = 0;
 
-var PRINT_RESULTS = false;
-var DOWNLOAD_RESULTS = false;
+var PRINT_RESULTS;
+var DOWNLOAD_RESULTS;
+var SIMPLE_INFO;
+var DRAW_ANT_PORTION;
+var DRAW_TILE_ABSTRACT;

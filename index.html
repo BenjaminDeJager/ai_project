@@ -115,7 +115,8 @@
 		<input type="text" id="minCarryingCapacity" value="1" />Min Carrying Capacity<br />
         <input type="text" id="energyDecay" value="5" />Energy Decay<br />
 		<input type="text" id="matureTime" value="100" />Larva Maturation In Cycles<br />
-	</div>
+
+  </div>
 
 	<p>
 		<a href="showGraphs.html">Graphs</a>
@@ -126,6 +127,8 @@
     <input type="checkbox" id="downloadResults" /> download results of simulation if checked<br />
     <input type="checkbox" id="printOngoingResults" /> print Ongoing Results of simulation in console if checked<br />
     <input type="checkbox" id="simple Info" />If checked, don't calculate statistics for Info section<br />
+    <input type="text" id="drawAntPortion" value="1.0" /> fraction of ants to draw (0.0 to skip entirely)<br />
+    <input type="text" id="drawTileabstraction" value="1.0" /> (must be > 1): 1 means every tile is drawn, 4 means every 4x4 block of tiles is abstracted into one<br />
   </div>
 </body>
 </html>

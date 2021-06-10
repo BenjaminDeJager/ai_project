@@ -20,7 +20,7 @@ class HistogramNew{
     this.fieldHistory = pointer;
 
     this.numBuckets = 20;
-    this.numTicks = TICK_DISPLAY;
+    this.numTicks = Math.round(TICK_DISPLAY);
     this.width = Math.trunc(this.sx / this.numTicks);
     this.height = Math.trunc(this.sy / this.numBuckets);
 
@@ -38,49 +38,58 @@ class HistogramNew{
   updatePeriod() {}
 
   drawPeriod(ctx) {
-    this.ctx.clearRect(this.x, this.y, this.sx, this.sy);
+    this.ctx.clearRect(this.x, this.y, this.sx+80, this.sy+20);
 
     let present = this.fieldHistory.length - 1;
     let past = Math.max(0, present - this.numTicks);
     let missingTicks = this.numTicks - (present - past)
     //the first sub-array to draw is <past> ticks/indexs from the beginning.
 
+    let val;
     for(var i = present; i > past; i--) {
       let maxValue = Math.max(...(this.fieldHistory[present]));
       for(var j = 0; j < this.numBuckets; j++) {
-        this.fill(this.fieldHistory[Math.max(0,i)][j]/maxValue, i-past + missingTicks, j, this.color, this.width);
+        val = this.fieldHistory[Math.max(0,i)][j];
+        this.fill(val/maxValue, i-past + missingTicks, j, this.width);
+        if (val != 0 && i == present) {
+          ctx.fillText((val/maxValue).toFixed(2), this.x + this.sx + 10, this.y + this.height*(j+1));
+          ctx.fillText(val, this.x + this.sx + 60, this.y + this.height*(j+1));
+        }
       }
     }
-
-    if(!SIMPLE_INFO) {
-      for(let k = 0 ; k < this.numBuckets; k++) {
-        this.fill(k/this.numBuckets, this.numTicks + 5, k, this.color, this.width*10);
-        ctx.fillText(k/this.numBuckets, this.x + this.sx + 20, this.y + this.height*(k+1));
-      }
-    }
+    ctx.fillText("portion", this.x + this.sx + 5, this.y + this.sy + 10);
+    ctx.fillText("actual", this.x + this.sx + 60, this.y + this.sy + 10);
+    //
+    // if(!SIMPLE_INFO) {
+    //   for(let k = 0; k < this.numBuckets; k++) {
+    //     this.fill((1*k)/this.numBuckets, this.numTicks + 65, (1*k), 10);
+    //     if(k%1 ==0) {
+    //       ctx.fillText(((1*k)/this.numBuckets).toFixed(2), this.x + this.sx + 60, this.y + this.height*(k/1+1));
+    //     }
+    //   }
+    // }
 
     ctx.save();
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = this.lineWidth;
+    this.ctx.font = "12px Courier";
     ctx.fillStyle = "#000000";
     ctx.strokeRect(this.x, this.y, this.sx, this.sy);
-    ctx.fillText("cycle #" + past, this.x, this.y + this.sy + 10);
-    ctx.fillText("cycle #" + present, this.x + this.sx - 50, this.y + this.sy + 10);
+    if(past > 1000) {
+      ctx.fillText("k-C# " + (past/1000).toFixed(1), this.x, this.y + this.sy + 12);
+      ctx.fillText("k-C# " + (present/1000).toFixed(1), this.x + this.sx - 50, this.y + this.sy + 12);
+    } else {
+      ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
+      ctx.fillText("C# " + present, this.x + this.sx - 50, this.y + this.sy + 12);
+    }
     ctx.restore();
 
-    // for(var i = 0; i < end; i++) { //i iterates through each tick of the past.
-    //   for(var j = 0; j < this.numBuckets; j++) { //j iterates through each bucket for each tick.
-    //     ctx.fillStyle = `rgba(0, 32, 0, ${0.01*this.fieldHistory[present - i][j]})`;
-    //     ctx.fillRect(this.x + (numTicks/rectSize-i)*rectSize, this.y + j*rectSize, rectSize, rectSize)
-    //     //ctx.fillText((this.fieldHistories[0][this.fieldHistories[0].length-1 - i]), this.x, this.y + j*rectSize);
-    //   }
-    // }
     // if(this.timer > 0 && this.mouse) {
-    //   this.drawValue(this.ctx, this.i, this.j);
+    //   this.drawValue(this.ctx, this.i, this.j, this.mouse);
     // }
   }
 
-  fill(value, x, y, base, thick) {
+  fill(value, x, y, thick) {
     // var c = 255 - Math.floor(color * 256);
     // this.ctx.fillStyle = rgb(c, c, c);
     if(value == 0) {
@@ -95,31 +104,33 @@ class HistogramNew{
     } else {
       var c = value * 99 + 1;
       c = 511 - Math.floor(Math.log(c) / Math.log(100) * 512);
+      let base = this.color;
       this.ctx.save();
       if (c > 255) {
           c = c - 256;
-          this.ctx.fillStyle = rgb(c*base[0], c*base[1], c*base[2]);
+          this.ctx.fillStyle = rgb(c*base[0]*0.5 + c*base[1], c*base[1]*0.5 + c*base[2], c*base[2]*0.5 + c*base[0]);
       } else {
           //c = 255 - c;
-          this.ctx.fillStyle = rgb(c*base[1], c*base[2], c*base[0]);
+          this.ctx.fillStyle = rgb(c*base[0], c*base[1], c*base[2]);
       }
-      this.ctx.fillRect(this.x + (x * this.width) - this.width,
-                    this.y + (y * this.height),
-                this.width*thick,
-              this.height);
+      this.ctx.fillRect(this.x + (x * this.width) - thick*2,
+                    this.y + (y * this.height) - 1,
+                thick,
+              this.height-0.5);
       this.ctx.restore();
     }
   }
 
   drawValue(ctx,i,j){
-    ctx.save();
-    ctx.fillStyle = this.color;
-    ctx.font = 2*this.height+'px serif';
-    if(this.fieldHistory[i][j]) {
-      ctx.fillText(this.fieldHistory[i][j],
-        this.x + this.sx + 5, this.y + j*this.height);
-    }
-    ctx.restore();
+    // ctx.save();
+    // ctx.fillStyle = this.color;
+    // ctx.font = 2*this.height+'px serif';
+    // if(this.fieldHistory[i][j]) {
+    //   ctx.fillText(this.fieldHistory[i][j],
+    //     this.x + this.sx + 100, this.y + 0.5*this.sy);
+    //   ctx
+    // }
+    // ctx.restore();
   }
 
   update(){
