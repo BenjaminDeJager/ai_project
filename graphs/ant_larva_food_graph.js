@@ -4,13 +4,14 @@ function Graph(game, mound) {
 	this.ctx = game.ctx;
 	this.mound = mound;
 	this.game = game;
-	this.ungatheredFoodData = [];
+	this.mound.ungatheredFoodData = [];
+	this.ungatheredFoodData = this.mound.ungatheredFoodData;
 	this.foodData = [];
 //	this.antData.push(mound.antCount);
 //	this.larvaData.push(mound.larvaCount);
 //	this.foodData.push(Math.floor(mound.foodStorage/EAT_AMOUNT));
 	this.maxVal = Math.max(this.harvestableFoodData, this.foodData);
-	Entity.call(this, game, 0, 610);
+	Entity.call(this, game, 810, 610);
 }
 
 Graph.prototype.update = function () {

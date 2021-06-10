@@ -57,6 +57,8 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.foodCollection = Math.ceil(this.maxFood/5);
 
 	this.layTimer = 0;
+	this.myDrawShare = Math.random(); //each ant picks a number in [0,1)
+		//and if this value is above DRAW_PORTION they are allowed to be drawn.
 
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
@@ -79,6 +81,7 @@ Ant.prototype.update = function() {
 
 	} else if (this.role === INTERIM) {
 		this.chooseRole();
+		this.myDrawShare = Math.random(); //re-decide if we will draw.
 	} else {
 		this.decide();
 
@@ -103,64 +106,66 @@ Ant.prototype.updatePeriod = function() {
 }
 
 Ant.prototype.draw = function() {
-	if (this.food >= this.maxFood) {
-		if (this.role === EXPLOIT)
-			this.ctx.fillStyle = "#004400";
-		else if (this.role === EXPLORE)
-			this.ctx.fillStyle = "#004444";
-	} else if (this.food > Math.round(this.maxFood/2)) {
-		if (this.role === EXPLOIT)
-			this.ctx.fillStyle = "#008800";
-		else if (this.role === EXPLORE)
-			this.ctx.fillStyle = "#008888";
-	} else if (this.food > 0) {
-		if (this.role === EXPLOIT)
-			this.ctx.fillStyle = "#00BB00";
-		else if (this.role === EXPLORE)
-			this.ctx.fillStyle = "#00BBBB";
-	} else {
-		if (this.role === EXPLOIT)
-			this.ctx.fillStyle = "#00FF00";
-		else if (this.role === EXPLORE)
-			this.ctx.fillStyle = "#00FFFF";
-	}
-	if (this.role === STANDBY) {
-		this.ctx.fillStyle = "#FF0000";
-	}
+	if(this.myDrawShare < DRAW_ANT_PORTION) { //DRAW_PORTION is used to decide how often to draw each ant and tile.
+		if (this.food >= this.maxFood) {
+			if (this.role === EXPLOIT)
+				this.ctx.fillStyle = "#004400";
+			else if (this.role === EXPLORE)
+				this.ctx.fillStyle = "#004444";
+		} else if (this.food > Math.round(this.maxFood/2)) {
+			if (this.role === EXPLOIT)
+				this.ctx.fillStyle = "#008800";
+			else if (this.role === EXPLORE)
+				this.ctx.fillStyle = "#008888";
+		} else if (this.food > 0) {
+			if (this.role === EXPLOIT)
+				this.ctx.fillStyle = "#00BB00";
+			else if (this.role === EXPLORE)
+				this.ctx.fillStyle = "#00BBBB";
+		} else {
+			if (this.role === EXPLOIT)
+				this.ctx.fillStyle = "#00FF00";
+			else if (this.role === EXPLORE)
+				this.ctx.fillStyle = "#00FFFF";
+		}
+		if (this.role === STANDBY) {
+			this.ctx.fillStyle = "#FF0000";
+		}
 
-	if (this.role === EGG_DOWN_TIME) {
-		this.ctx.fillStyle = "#AA00AA";
-	}
+		if (this.role === EGG_DOWN_TIME) {
+			this.ctx.fillStyle = "#AA00AA";
+		}
 
-	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/5),
-					  this.y+Math.round(CELL_SIZE/5),
-					  Math.round(CELL_SIZE*3/5),
-					  Math.round(CELL_SIZE*3/5));
+		this.ctx.fillRect(this.x+Math.round(CELL_SIZE/5),
+						  this.y+Math.round(CELL_SIZE/5),
+						  Math.round(CELL_SIZE*3/5),
+						  Math.round(CELL_SIZE*3/5));
 
-	switch(this.dir) {
-		case NORTH:
-			this.ctx.fillRect(this.x+Math.round(CELL_SIZE*2/5),
-							  this.y-Math.round(CELL_SIZE*2/5),
-							  Math.round(CELL_SIZE/5),
-							  Math.round(CELL_SIZE*3/5));
-			break;
-		case EAST:
-			this.ctx.fillRect(this.x+Math.round(CELL_SIZE*4/5),
-							  this.y+Math.round(CELL_SIZE*2/5),
-							  Math.round(CELL_SIZE*3/5),
-							  Math.round(CELL_SIZE/5));
-			break;
-		case SOUTH:
-			this.ctx.fillRect(this.x+Math.round(CELL_SIZE*2/5),
-							  this.y+Math.round(CELL_SIZE*4/5),
-							  Math.round(CELL_SIZE/5),
-							  Math.round(CELL_SIZE*3/5));
-			break;
-		case WEST:
-			this.ctx.fillRect(this.x-Math.round(CELL_SIZE*2/5),
-							  this.y+Math.round(CELL_SIZE*2/5),
-							  Math.round(CELL_SIZE*3/5),
-							  Math.round(CELL_SIZE/5));
+		switch(this.dir) {
+			case NORTH:
+				this.ctx.fillRect(this.x+Math.round(CELL_SIZE*2/5),
+								  this.y-Math.round(CELL_SIZE*2/5),
+								  Math.round(CELL_SIZE/5),
+								  Math.round(CELL_SIZE*3/5));
+				break;
+			case EAST:
+				this.ctx.fillRect(this.x+Math.round(CELL_SIZE*4/5),
+								  this.y+Math.round(CELL_SIZE*2/5),
+								  Math.round(CELL_SIZE*3/5),
+								  Math.round(CELL_SIZE/5));
+				break;
+			case SOUTH:
+				this.ctx.fillRect(this.x+Math.round(CELL_SIZE*2/5),
+								  this.y+Math.round(CELL_SIZE*4/5),
+								  Math.round(CELL_SIZE/5),
+								  Math.round(CELL_SIZE*3/5));
+				break;
+			case WEST:
+				this.ctx.fillRect(this.x-Math.round(CELL_SIZE*2/5),
+								  this.y+Math.round(CELL_SIZE*2/5),
+								  Math.round(CELL_SIZE*3/5),
+								  Math.round(CELL_SIZE/5));
+		}
 	}
 }
 
