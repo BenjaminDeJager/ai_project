@@ -287,8 +287,8 @@ GameEngine.prototype.setup = function() {
     ]);
     this.addEntity(this.popGraph);
 
-    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1.2, 0.2, 0])
-    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [3, 1, 0])
+    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0])
+    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0])
 }
 
 GameEngine.prototype.start = function () {
@@ -782,7 +782,7 @@ GameEngine.prototype.updatePeriod = function () {
 	}
   DOWNLOAD_RESULTS = document.getElementById("downloadResults").checked;
   PRINT_RESULTS = document.getElementById("printOngoingResults").checked;
-  SIMPLE_INFO = document.getElementById("simple Info").checked;
+  SIMPLE_INFO = document.getElementById("simple GUI").checked;
   DRAW_ANT_PORTION = document.getElementById("drawAntPortion").value;
 
   let temp = document.getElementById("drawTileabstraction").value;

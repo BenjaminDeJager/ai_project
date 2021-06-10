@@ -96,11 +96,13 @@ class HistogramNew{
       return;
     } else if(SIMPLE_INFO) {
       let simple = 256-value*256
+      this.ctx.save();
       this.ctx.fillStyle = rgb(simple,simple,simple);
       this.ctx.fillRect(this.x + (x * this.width) - this.width,
                     this.y + (y * this.height),
                 this.width,
               this.height);
+      this.ctx.restore();
     } else {
       var c = value * 99 + 1;
       c = 511 - Math.floor(Math.log(c) / Math.log(100) * 512);
