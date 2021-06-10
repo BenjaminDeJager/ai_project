@@ -154,17 +154,16 @@ Mound.prototype.draw = function() {
 }
 
 Mound.prototype.drawPeriod = function() {
-	this.ctx.strokeStyle = "#000000";
-	this.ctx.fillSytle = "#000000";
-	this.ctx.font = "18px Courier";
-
 	if(!SIMPLE_INFO) {
 		this.ctx.clearRect(0, SIM_Y, SIM_X, this.ctx.height - SIM_Y);
+
+		this.ctx.font = "18px Courier";
 
 		this.genX = 20;
 		this.cycleX = 180;
 		this.seasonX = 400;
 		this.foodX = 615;
+		this.ctx.fillStyle = "black";
 		this.ctx.fillText("Ant gen Info", this.genX, 630);
 		this.ctx.fillText("Cycle Info", this.cycleX, 630);
 		this.ctx.fillText("Season Info", this.seasonX, 630);
@@ -195,7 +194,6 @@ Mound.prototype.drawPeriod = function() {
 		this.ctx.fillText("Max total    : " + Math.trunc(MAX_TOTAL_FOOD/numFood), this.foodX, 735);
 	}
 
-	this.ctx.font = "10px sans-serif";
 	this.graph1.drawPeriod();
 	this.graph2.drawPeriod();
 	// this.roleHistogramData.drawPeriod();
@@ -240,7 +238,7 @@ Mound.prototype.spawnAnt = function() {
 					  this.colony,
 					  this.tiles,
 					  this,
-					  Math.random()*0.1 + 0.45,
+					  0.5,
 					  1,
 					  0);
 	} else if (Math.random() < MUTATION_RATE) {

@@ -63,6 +63,8 @@ GameEngine.prototype.init = function (ctx) {
 	this.step = document.getElementById("step");
 	this.save = document.getElementById("save");
 	this.load = document.getElementById("load");
+  this.isClicked = false;
+  this.mouseClick;
 
 	this.newMap = document.getElementById("newMap");
 	this.new = document.getElementById("new");
@@ -72,6 +74,7 @@ GameEngine.prototype.init = function (ctx) {
   this.surfaceHeight = this.ctx.canvas.height;
 
 	this.timer = new Timer();
+  this.fastTimer = new Timer();
 	this.settings = this.setSettings();
 	this.currentSetting = -1;
   this.avgAges = [];
@@ -284,8 +287,8 @@ GameEngine.prototype.setup = function() {
     ]);
     this.addEntity(this.popGraph);
 
-    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, "red")
-    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, "green")
+    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0])
+    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0])
 }
 
 GameEngine.prototype.start = function () {
@@ -672,6 +675,11 @@ GameEngine.prototype.startInput = function () {
 		that.newGame();
 	});
 
+  this.ctx.canvas.addEventListener("click", function(event){
+    that.isClicked = true;
+    that.mouseClick = {x: event.clientX, y: event.clientY};
+  });
+
 
     console.log('Input started');
 }
@@ -792,8 +800,8 @@ GameEngine.prototype.loop = function () {
 		this.draw();
 		this.drawPeriod();
 	}
-
-
+  this.isClicked = false;
+  this.mouseClick = null;
 }
 
 GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, hist2) {
