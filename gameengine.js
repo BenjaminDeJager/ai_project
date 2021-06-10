@@ -14,23 +14,35 @@ window.requestAnimationFrame ||
 
 function GameEngine() {
 	this.entities = [];
+  this.roleGraph;
+  this.forageGraph;
+  this.role
+
 	this.tiles = null;
-    this.ctx = null;
-    this.surfaceWidth = null;
-    this.surfaceHeight = null;
+  this.ctx = null;
+
+  this.surfaceWidth = null;
+  this.surfaceHeight = null;
+
 	this.isPaused = false;
 	this.ticked = false;
 	this.isStepping = false;
+
 	this.play = null;
 	this.pause = null;
 	this.step = null;
 	this.save = null;
 	this.load = null;
+
 	this.newMap = null;
 	this.new = null;
 	this.newAnt = null;
+
 	this.mound = null;
 	this.avgAges = [];
+
+
+
   for(var i = 0; i<9;i++) {
     this.avgAges.push({
 			breeders: [],
@@ -189,16 +201,6 @@ GameEngine.prototype.setup = function() {
 
 	this.tiles = tiles;
 
-	/*
-	for (var i = 0; i < YSIZE; i++) {
-		for (var j = 0; j < XSIZE; j++) {
-			if (i == 0 || i == YSIZE-1 || j == 0 || j == XSIZE-1) {
-				squares[i][j].foodLevel = 0;
-			}
-		}
-	}
-	*/
-
 	for (var i = 0; i < YSIZE; i++) {
 		for (var j = 0; j < XSIZE; j++) {
 			var neighbors = [];
@@ -264,6 +266,26 @@ GameEngine.prototype.setup = function() {
 	for (var i = 0; i < INIT_ANTS; i++) {
 		this.mound.spawnAnt();
 	}
+
+  this.popGraph = new LineGraph(this,
+    0, 1170, //location of top left corner
+    360, 180, //xSize, ySize
+    [
+      { pointer: this.mound.antCount,
+        color: "red",
+        history: [] //pull array from a "top-level" history array (in mound atm, move to game engine?)
+        //at end of experiment, a "data manager" can manage the storage of data in server.
+      },
+      {
+        pointer: this.mound.larvaCount,
+        color: "green",
+        history: []
+      }
+    ]);
+    this.addEntity(this.popGraph);
+
+    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, "red")
+    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, "green")
 }
 
 GameEngine.prototype.start = function () {
@@ -289,7 +311,7 @@ GameEngine.prototype.restart = function() {
 	document.getElementById("runNum").innerHTML = runNum;
 	console.log("restarting sim");
 	foodTotal = 0;
-    this.setParameters();
+  this.setParameters();
 	this.setup();
 }
 
@@ -533,22 +555,7 @@ GameEngine.prototype.newGame = function() {
 	foodTotal = 0;
     this.setParameters();
 	this.setup();
-  this.popGraph = new LineGraph(this,
-    0, 1170, //location of top left corner
-    360, 180, //xSize, ySize
-    [
-      { pointer: this.mound.antCount,
-        color: "red",
-        history: [] //pull array from a "top-level" history array (in mound atm, move to game engine?)
-        //at end of experiment, a "data manager" can manage the storage of data in server.
-      },
-      {
-        pointer: this.mound.larvaCount,
-        color: "green",
-        history: []
-      }
-    ]);
-  this.addEntity(this.popGraph);
+
 	this.resumeGame();
 }
 
@@ -698,8 +705,11 @@ GameEngine.prototype.drawPeriod = function() {
     //hive_graph
 		this.ctx.clearRect(SIM_X, 0, CHART_X + 50, CHART_Y);
     //larva/ant graph
-		this.ctx.clearRect(0, SIM_Y, SIM_X+CHART_X, CHART_BOTTOM_Y);
-		this.ctx.save();
+		this.ctx.clearRect(0, SIM_Y, SIM_X + CHART_X, CHART_BOTTOM_Y);
+
+    this.ctx.clearRect(SIM_X, 0, SIM_X, CHART_Y + CHART_BOTTOM_Y);
+
+    this.ctx.save();
 		for (var i = 0; i < this.entities.length; i++) {
 			this.entities[i].drawPeriod(this.ctx);
 		}
@@ -764,6 +774,7 @@ GameEngine.prototype.updatePeriod = function () {
 	}
   DOWNLOAD_RESULTS = document.getElementById("downloadResults").checked;
   PRINT_RESULTS = document.getElementById("printOngoingResults").checked;
+  SIMPLE_INFO = document.getElementById("simple Info").checked;
 }
 
 GameEngine.prototype.loop = function () {

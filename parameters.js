@@ -8,6 +8,8 @@ var CHART_X = 400;
 var CHART_Y = 600;
 var CHART_BOTTOM_Y = 200;
 
+var SIMPLE_INFO = false;
+
 var TICK_DISPLAY = 360;
 
 var NORTH = 0;

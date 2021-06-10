@@ -38,8 +38,8 @@ function Mound(game, xPos, yPos) {
 
 	this.graph1 = new Graph(game, this);
 	this.graph2 = new Graph2(game, this);
-	this.roleHistogramData = new Histogram(game, this, 810, 200, 0);
-	this.forageHistogramData = new Histogram(game, this, 810, 400, 1);
+	this.roleHistogramData = this.game.roleGraph;
+	this.forageHistogramData = this.game.forageGraph;
 
 	this.larvaPeriod = 0;
 	this.larvaPeriodData = [];
@@ -119,8 +119,8 @@ Mound.prototype.updatePeriod = function() {
 	this.updateGeneration();
 	this.graph1.updatePeriod();
 	this.graph2.updatePeriod();
-	this.roleHistogramData.updatePeriod();
-	this.forageHistogramData.updatePeriod();
+	// this.roleHistogramData.updatePeriod();
+	// this.forageHistogramData.updatePeriod();
 	this.calculateAvgAges();
 
 	if(PRINT_RESULTS) {
@@ -158,28 +158,48 @@ Mound.prototype.drawPeriod = function() {
 	this.ctx.fillSytle = "#000000";
 	this.ctx.font = "18px Courier";
 
-	const offsetX = 50;
-	this.ctx.fillText("Ant gen Info", 450+offsetX, 630);
-	this.ctx.fillText("Cycle Info", 700+offsetX, 630);
-	this.ctx.fillText("Season Info", 950+offsetX, 630);
+	if(!SIMPLE_INFO) {
+		this.ctx.clearRect(0, SIM_Y, SIM_X, this.ctx.height - SIM_Y);
 
-	this.ctx.font = "14px Courier";
-	this.ctx.fillText("Minimum Gen: " + this.minGen, 400+offsetX, 655); //minimum, average and maximum
-	this.ctx.fillText("Average Gen: " + this.averageGen, 400+offsetX, 675); //generations of the ant population
-	this.ctx.fillText("Maximum Gen: " + this.maxGen, 400+offsetX, 695);
+		this.genX = 20;
+		this.cycleX = 180;
+		this.seasonX = 400;
+		this.foodX = 615;
+		this.ctx.fillText("Ant gen Info", this.genX, 630);
+		this.ctx.fillText("Cycle Info", this.cycleX, 630);
+		this.ctx.fillText("Season Info", this.seasonX, 630);
+		this.ctx.fillText("Food/Env Info", this.foodX, 630);
 
-	this.ctx.fillText("Current Cycle	      : " + this.game.updateCounter, 650+offsetX, 655);
-	this.ctx.fillText("Cycles since Season : " + this.game.seasonCounter, 650+offsetX, 675);
-	this.ctx.fillText("Cycles in Season    : " + SEASON_LENGTH, 650+offsetX, 695);
+		this.ctx.font = "14px Courier";
+		this.ctx.fillText("Minimum gen#: " + this.minGen, this.genX, 655); //minimum, average and maximum
+		this.ctx.fillText("Average gen#: " + this.averageGen, this.genX, 675); //generations of the ant population
+		this.ctx.fillText("Maximum gen#: " + this.maxGen, this.genX, 695);
 
-	this.ctx.fillText("Current Season : " + (this.game.currentSeason + 1), 900+offsetX, 655)
-	this.ctx.fillText("Seasons in Year: " + NUM_OF_SEASONS, 900+offsetX, 675)
+		this.ctx.fillText("Current cycle#: " + this.game.updateCounter, this.cycleX, 655);
+		this.ctx.fillText("Season end    : " + (this.game.updateCounter - this.game.seasonCounter + SEASON_LENGTH), this.cycleX, 675);
+		this.ctx.fillText("Season cycle #: " + this.game.seasonCounter, this.cycleX, 695);
+		this.ctx.fillText("Cycle's left  : " + (SEASON_LENGTH - this.game.seasonCounter), this.cycleX, 715);
+
+		this.ctx.fillText("Current Season : " + (this.game.currentSeason + 1),	this.seasonX, 655)
+		this.ctx.fillText("Seasons in Year: " + NUM_OF_SEASONS,	this.seasonX, 675)
+
+		//these values should be pre-calculated in another location and stored else-where.
+		let nonEmpty = this.game.tiles.filter(tile => tile.foodLevel != 0);
+		let numFood = nonEmpty.length;
+		let totalFood = this.ungatheredFoodData[this.ungatheredFoodData.length-1]
+		let avgFood = totalFood/numFood;
+		this.ctx.fillText("Num non-empty: " + Math.trunc(numFood),	this.foodX, 655);
+		this.ctx.fillText("Avg non-empty: " + Math.trunc(avgFood),	this.foodX, 675);
+		this.ctx.fillText("Sum non-empty: " + Math.trunc(totalFood),	this.foodX, 695);
+		this.ctx.fillText("Max of each  : " + Math.trunc(MAX_TILE_FOOD/numFood), this.foodX, 715);
+		this.ctx.fillText("Max total    : " + Math.trunc(MAX_TOTAL_FOOD/numFood), this.foodX, 735);
+	}
 
 	this.ctx.font = "10px sans-serif";
 	this.graph1.drawPeriod();
 	this.graph2.drawPeriod();
-	this.roleHistogramData.drawPeriod();
-	this.forageHistogramData.drawPeriod();
+	// this.roleHistogramData.drawPeriod();
+	// this.forageHistogramData.drawPeriod();
 }
 
 Mound.prototype.setTiles = function(tiles) {
@@ -220,7 +240,7 @@ Mound.prototype.spawnAnt = function() {
 					  this.colony,
 					  this.tiles,
 					  this,
-					  0.5,
+					  Math.random()*0.1 + 0.45,
 					  1,
 					  0);
 	} else if (Math.random() < MUTATION_RATE) {
@@ -305,7 +325,7 @@ Mound.prototype.updateRoleHistogram = function() {
 	if(PRINT_RESULTS) {
 		console.log("breed/forage: " + roleHistogram);
 	}
-	this.roleHistogram = roleHistogram;
+	this.roleHistogram.push(roleHistogram);
 }
 
 Mound.prototype.updateForageHistogram = function() {
@@ -325,7 +345,7 @@ Mound.prototype.updateForageHistogram = function() {
 	if(PRINT_RESULTS) {
 		console.log("exploit/explore: " + histogram);
 	}
-	this.forageHistogram = histogram;
+	this.forageHistogram.push(histogram);
 }
 
 Mound.prototype.updateBreedableAnts = function() {

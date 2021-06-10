@@ -71,7 +71,7 @@ function LineGraph(game, x, y, xSize, ySize, fieldTuples/*, tickStart, tickEnd*/
   //not sure why we need to be applying Math.max to each empty array however.
 
   // I don't see much need to make graphs Entitys, but whatever.
-  Entity.call(this, game, x, y);
+  Entity.call(this, game, x, y, 360, 180);
 }
 
 LineGraph.prototype = new Entity();
@@ -85,7 +85,7 @@ LineGraph.prototype.updatePeriod = function() {
     this.fieldHistories[i].push(this.fields[i]);
     //this feels so wrong, but I think it works?
   }
-  console.log(this.fieldHistories);
+
 
   // we want to store the game-time, or "tick" in which
   //these values were taken.
@@ -96,7 +96,6 @@ LineGraph.prototype.updatePeriod = function() {
 }
 
 LineGraph.prototype.drawPeriod = function(ctx) {
-  console.log("drawperiod");
   // this.updateMax();
   // if(this.fieldHistories.size > 0
   //   && this.fieldHistories.values().next().length > 1){
@@ -129,5 +128,5 @@ LineGraph.prototype.updateMax = function() {
 }
 
 //I see no reason to update or draw every game tick, only when visuals change.
-LineGraph.prototype.update = function () {console.log("update")};
-LineGraph.prototype.draw = function (ctx) {console.log("draw")};
+LineGraph.prototype.update = function () {};
+LineGraph.prototype.draw = function (ctx) {};
