@@ -47,52 +47,46 @@ class HistogramNew{
 
     let val;
     for(var i = present; i > past; i--) {
-      let sumValue = this.fieldHistory[present].reduce(function (acc, x) {
+      let sumValue = this.fieldHistory[i].reduce(function (acc, x) {
             return acc + x;
         }, 0);
       for(var j = 0; j < this.numBuckets; j++) {
         val = this.fieldHistory[Math.max(0,i)][j];
         this.fill(val/sumValue, i-past + missingTicks, j, this.width);
         if (!SIMPLE_INFO && val != 0 && i == present) {
-          ctx.fillText(j, this.x + this.sx + 5, this.y + this.height*(j+1));
-          ctx.fillText((val/sumValue).toFixed(2), this.x + this.sx + 25, this.y + this.height*(j+1));
-          ctx.fillText(val, this.x + this.sx + 60, this.y + this.height*(j+1));
+          ctx.fillText(j, this.x + this.sx + 4, this.y + this.height*(j+1));
+          ctx.fillText((val/sumValue).toFixed(2), this.x + this.sx + 20, this.y + this.height*(j+1));
+          ctx.fillText(val, this.x + this.sx + 55, this.y + this.height*(j+1));
         }
       }
     }
-    if(SIMPLE_INFO) {
-      ctx.save();
-
-      ctx.strokeStyle = "#000000";
+    ctx.save();
+    if(!SIMPLE_INFO) {
       ctx.lineWidth = this.lineWidth;
       this.ctx.font = "12px Courier";
       ctx.fillStyle = "#000000";
 
-      ctx.fillText("portion", this.x + this.sx + 25, this.y + this.sy + 13);
-      ctx.fillText("actual", this.x + this.sx + 60, this.y + this.sy + 13);
-      
-      ctx.strokeRect(this.x, this.y, this.sx, this.sy);
+      ctx.fillText("portion", this.x + this.sx + 20, this.y + this.sy + 10);
+      ctx.fillText("actual", this.x + this.sx + 55, this.y + this.sy + 20);
+
       if(past > 1000000) {
-        ctx.fillText("k-C# " + (past/1000000).toFixed(3), this.x, this.y + this.sy + 12);
-        ctx.fillText("k-C# " + (present/1000000).toFixed(3), this.x + this.sx - 60, this.y + this.sy + 12);
+        ctx.fillText("m-C# " + (past/1000000).toFixed(3), this.x, this.y + this.sy + 12);
+        ctx.fillText("m-C# " + (present/1000000).toFixed(3), this.x + this.sx - 70, this.y + this.sy + 12);
       } else if (past > 1000) {
         ctx.fillText("k-C# " + (past/1000).toFixed(1), this.x, this.y + this.sy + 12);
-        ctx.fillText("k-C# " + (present/1000).toFixed(1), this.x + this.sx - 60, this.y + this.sy + 12);
+        ctx.fillText("k-C# " + (present/1000).toFixed(1), this.x + this.sx - 70, this.y + this.sy + 12);
       } else {
         ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
-        ctx.fillText("C# " + present, this.x + this.sx - 60, this.y + this.sy + 12);
+        ctx.fillText("C# " + present, this.x + this.sx - 70, this.y + this.sy + 12);
       }
     } else {
-      ctx.strokeRect(this.x, this.y, this.sx, this.sy);
       ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
-      ctx.fillText("C# " + present, this.x + this.sx - 60, this.y + this.sy + 12);
+      ctx.fillText("C# " + present, this.x + this.sx - 70, this.y + this.sy + 12);
     }
-    ctx.fillText(this.name, this.x + this.sx/2 - 40, this.y + this.sy + 12);
+    ctx.strokeStyle = "#000000";
+    ctx.strokeRect(this.x, this.y, this.sx, this.sy);
+    ctx.fillText(this.name, this.x + this.sx/2 - 50, this.y + this.sy + 12);
     ctx.restore();
-
-    // if(this.timer > 0 && this.mouse) {
-    //   this.drawValue(this.ctx, this.i, this.j, this.mouse);
-    // }
   }
 
   fill(value, x, y, thick) {
