@@ -25,8 +25,36 @@ window.requestAnimFrame = (function () {
         };
 })();
 
+class Timer {
+    constructor() {
+        this.gameTime = 0;
+        this.maxStep = 0.05;
+        this.lastTimestamp = 0;
+    };
+
+    tick() {
+        var current = Date.now();
+        var delta = (current - this.lastTimestamp) / 1000;
+        this.lastTimestamp = current;
+
+        var gameDelta = Math.min(delta, this.maxStep);
+        this.gameTime += gameDelta;
+        return gameDelta;
+    };
+};
+
+Timer.prototype.tick = function () {
+    var wallCurrent = Date.now();
+    var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
+    this.wallLastTimestamp = wallCurrent;
+
+    var simDelta = Math.min(wallDelta, this.maxStep);
+    this.simTime += simDelta;
+    return simDelta;
+}
+
 // add global parameters here
 
 //var params = {
-// 
+//
 //};

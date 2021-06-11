@@ -40,7 +40,7 @@ var RANDOM_OR_QUEUE_TOGGLE = true;
 var SUM_OR_MAX_FITNESS_TOGGLE = true;
 var ROLE_GENE_TOGGLE = true;
 
-var MEME_TOGGLE = false;
+var MEME_TOGGLE = true;
 
 var GENE_LIFE_TOGGLE = true;
 var MIN_AGE = 100;

@@ -14,7 +14,6 @@ window.requestAnimationFrame ||
 
 function GameEngine() {
     this.entities = [];
-    this.role
 
     this.tiles = null;
     this.ctx = null;
@@ -44,6 +43,7 @@ function GameEngine() {
     this.roleMemeGraph;
     this.forageMemeGraph;
 
+    this.mouse;
 
     for (var i = 0; i < 9; i++) {
         this.avgAges.push({
@@ -294,8 +294,8 @@ GameEngine.prototype.setup = function() {
     this.addEntity(this.roleGraph);
     this.addEntity(this.forageGraph);
 
-    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram, 1300 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Meme");
-    this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram, 1300 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Meme");
+    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram, 1250 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Meme");
+    this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram, 1250 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Meme");
     this.addEntity(this.roleMemeGraph);
     this.addEntity(this.forageMemeGraph);
 }
@@ -757,26 +757,6 @@ GameEngine.prototype.update = function () {
 	this.seasonCounter++;
 }
 
-GameEngine.prototype.changeSeason = function () {
-	this.seasonCounter = 0;
-	this.currentSeason = this.currentSeason + 1 > NUM_OF_SEASONS-1 ? 0 : this.currentSeason + 1;
-	var sL = "seasonLength" + Number(this.currentSeason + 1);
-	var regA = "foodRegenAmount" + (this.currentSeason + 1);
-	var repA = "foodReplenishAmount" + (this.currentSeason + 1);
-	var regR = "foodRegenRate" + (this.currentSeason + 1);
-	var repR = "foodReplenishRate" + (this.currentSeason + 1);
-	var foodD = "foodDensity" + (this.currentSeason + 1);
-	SEASON_LENGTH = Number(document.getElementById(sL).value);
-	FOOD_REGEN_AMOUNT = Number(document.getElementById(regA).value);
-	FOOD_REPLENISH_AMOUNT = Number(document.getElementById(repA).value);
-	FOOD_REGEN_RATE = Number(document.getElementById(regR).value);
-	FOOD_REPLENISH_RATE = Number(document.getElementById(repR).value);
-	FOOD_DENSITY = Number(document.getElementById(foodD).value);
-	for (var i = 0; i < this.tiles.length; i++) {
-		this.tiles[i].foodLevel = 0;
-	}
-}
-
 GameEngine.prototype.updatePeriod = function () {
   var entitiesCount = this.entities.length;
 	if (this.updateCounter % UPDATE_PERIOD === 0) {
@@ -817,6 +797,26 @@ GameEngine.prototype.loop = function () {
 	}
   this.isClicked = false;
   this.mouseClick = null;
+}
+
+GameEngine.prototype.changeSeason = function () {
+	this.seasonCounter = 0;
+	this.currentSeason = this.currentSeason + 1 > NUM_OF_SEASONS-1 ? 0 : this.currentSeason + 1;
+	var sL = "seasonLength" + Number(this.currentSeason + 1);
+	var regA = "foodRegenAmount" + (this.currentSeason + 1);
+	var repA = "foodReplenishAmount" + (this.currentSeason + 1);
+	var regR = "foodRegenRate" + (this.currentSeason + 1);
+	var repR = "foodReplenishRate" + (this.currentSeason + 1);
+	var foodD = "foodDensity" + (this.currentSeason + 1);
+	SEASON_LENGTH = Number(document.getElementById(sL).value);
+	FOOD_REGEN_AMOUNT = Number(document.getElementById(regA).value);
+	FOOD_REPLENISH_AMOUNT = Number(document.getElementById(repA).value);
+	FOOD_REGEN_RATE = Number(document.getElementById(regR).value);
+	FOOD_REPLENISH_RATE = Number(document.getElementById(repR).value);
+	FOOD_DENSITY = Number(document.getElementById(foodD).value);
+	for (var i = 0; i < this.tiles.length; i++) {
+		this.tiles[i].foodLevel = 0;
+	}
 }
 
 GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, hist2) {
@@ -903,22 +903,6 @@ GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, 
 
 	console.log(dataObj);
 	return str;
-}
-
-function Timer() {
-    this.simTime = 0;
-    this.maxStep = 0.05;
-    this.wallLastTimestamp = 0;
-}
-
-Timer.prototype.tick = function () {
-    var wallCurrent = Date.now();
-    var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
-    this.wallLastTimestamp = wallCurrent;
-
-    var simDelta = Math.min(wallDelta, this.maxStep);
-    this.simTime += simDelta;
-    return simDelta;
 }
 
 function setupSeasons(num) {

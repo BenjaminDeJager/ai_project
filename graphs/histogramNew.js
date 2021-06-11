@@ -84,7 +84,7 @@ class HistogramNew{
     }
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(this.x, this.y, this.sx, this.sy);
-    ctx.fillText(this.name, this.x + this.sx/2 - 40, this.y + this.sy + 12);
+    ctx.fillText(this.name, this.x + this.sx/2 - this.name.length*4, this.y + this.sy + 12);
     ctx.restore();
   }
 
