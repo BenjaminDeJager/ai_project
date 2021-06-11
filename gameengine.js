@@ -287,8 +287,8 @@ GameEngine.prototype.setup = function() {
     ]);
     this.addEntity(this.popGraph);
 
-    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0])
-    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0])
+    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0], "worker/queen")
+    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0], "explore/exploit")
 }
 
 GameEngine.prototype.start = function () {
