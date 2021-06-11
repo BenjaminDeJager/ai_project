@@ -61,7 +61,7 @@ class HistogramNew{
         }
       }
     }
-    if(SIMPLE_INFO) {
+    if(!SIMPLE_INFO) {
       ctx.save();
 
       ctx.strokeStyle = "#000000";
@@ -69,9 +69,9 @@ class HistogramNew{
       this.ctx.font = "12px Courier";
       ctx.fillStyle = "#000000";
 
-      ctx.fillText("portion", this.x + this.sx + 25, this.y + this.sy + 13);
-      ctx.fillText("actual", this.x + this.sx + 60, this.y + this.sy + 13);
-      
+      ctx.fillText("portion", this.x + this.sx + 25, this.y + this.sy + 20);
+      ctx.fillText("actual", this.x + this.sx + 60, this.y + this.sy + 10);
+
       ctx.strokeRect(this.x, this.y, this.sx, this.sy);
       if(past > 1000000) {
         ctx.fillText("k-C# " + (past/1000000).toFixed(3), this.x, this.y + this.sy + 12);
@@ -83,13 +83,13 @@ class HistogramNew{
         ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
         ctx.fillText("C# " + present, this.x + this.sx - 60, this.y + this.sy + 12);
       }
+      ctx.restore();
     } else {
       ctx.strokeRect(this.x, this.y, this.sx, this.sy);
       ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
       ctx.fillText("C# " + present, this.x + this.sx - 60, this.y + this.sy + 12);
     }
     ctx.fillText(this.name, this.x + this.sx/2 - 40, this.y + this.sy + 12);
-    ctx.restore();
 
     // if(this.timer > 0 && this.mouse) {
     //   this.drawValue(this.ctx, this.i, this.j, this.mouse);
