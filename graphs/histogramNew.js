@@ -33,7 +33,6 @@ class HistogramNew{
     this.removeFromWorld = false;
     this.lineWidth = 1;
     this.ctx = this.game.ctx;
-    this.game.addEntity(this);
   }
 
   updatePeriod() {}

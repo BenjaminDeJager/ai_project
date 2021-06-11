@@ -13,98 +13,100 @@ window.requestAnimationFrame ||
 */
 
 function GameEngine() {
-	this.entities = [];
-  this.roleGraph;
-  this.forageGraph;
-  this.role
+    this.entities = [];
+    this.role
 
-	this.tiles = null;
-  this.ctx = null;
+    this.tiles = null;
+    this.ctx = null;
 
-  this.surfaceWidth = null;
-  this.surfaceHeight = null;
+    this.surfaceWidth = null;
+    this.surfaceHeight = null;
 
-	this.isPaused = false;
-	this.ticked = false;
-	this.isStepping = false;
+    this.isPaused = false;
+    this.ticked = false;
+    this.isStepping = false;
 
-	this.play = null;
-	this.pause = null;
-	this.step = null;
-	this.save = null;
-	this.load = null;
+    this.play = null;
+    this.pause = null;
+    this.step = null;
+    this.save = null;
+    this.load = null;
 
-	this.newMap = null;
-	this.new = null;
-	this.newAnt = null;
+    this.newMap = null;
+    this.new = null;
+    this.newAnt = null;
 
-	this.mound = null;
-	this.avgAges = [];
+    this.mound = null;
+    this.avgAges = [];
+
+    this.roleGraph;
+    this.forageGraph;
+    this.roleMemeGraph;
+    this.forageMemeGraph;
 
 
+    for (var i = 0; i < 9; i++) {
+        this.avgAges.push({
+            breeders: [],
+            generalists: [],
+            foragers: [],
+            total: []
+        });
+    };
 
-  for(var i = 0; i<9;i++) {
-    this.avgAges.push({
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: []
-		});
-  };
-
-	this.runNum = 0;
-}
+    this.runNum = 0;
+};
 
 GameEngine.prototype.init = function (ctx) {
-	this.ctx = ctx;
-	// this.socket = io.connect("http://24.16.255.56:8888");
-	this.play = document.getElementById("play");
-	this.pause = document.getElementById("pause");
-	this.step = document.getElementById("step");
-	this.save = document.getElementById("save");
-	this.load = document.getElementById("load");
-  this.isClicked = false;
-  this.mouseClick;
+    this.ctx = ctx;
+    // this.socket = io.connect("http://24.16.255.56:8888");
+    this.play = document.getElementById("play");
+    this.pause = document.getElementById("pause");
+    this.step = document.getElementById("step");
+    this.save = document.getElementById("save");
+    this.load = document.getElementById("load");
+    this.isClicked = false;
+    this.mouseClick;
 
-	this.newMap = document.getElementById("newMap");
-	this.new = document.getElementById("new");
-	this.newAnt = document.getElementById("newAnt");
+    this.newMap = document.getElementById("newMap");
+    this.new = document.getElementById("new");
+    this.newAnt = document.getElementById("newAnt");
 
-  this.surfaceWidth = this.ctx.canvas.width;
-  this.surfaceHeight = this.ctx.canvas.height;
+    this.surfaceWidth = this.ctx.canvas.width;
+    this.surfaceHeight = this.ctx.canvas.height;
 
-	this.timer = new Timer();
-  this.fastTimer = new Timer();
-	this.settings = this.setSettings();
-	this.currentSetting = -1;
-  this.avgAges = [];
-  for(var i = 0; i<9;i++) {
-    this.avgAges.push({
-			breeders: [],
-			generalists: [],
-			foragers: [],
-			total: []
-		});
-  };
-	this.runNum = 0;
-	document.getElementById("seasonDiv").innerHTML = "Season 1<br />" +
+    this.timer = new Timer();
+    this.fastTimer = new Timer();
+    this.settings = this.setSettings();
+    this.currentSetting = -1;
+    this.avgAges = [];
+    for (var i = 0; i < 9; i++) {
+        this.avgAges.push({
+            breeders: [],
+            generalists: [],
+            foragers: [],
+            total: []
+        });
+    };
+    this.runNum = 0;
+    document.getElementById("seasonDiv").innerHTML = "Season 1<br />" +
 	"<input type='text' id='seasonLength1' value='1000'/>Length<br />" +
 	"<input type='text' id='foodRegenRate1' value='0'/>Food Regen Rate<br />" +
 	"<input type='text' id='foodRegenAmount1' value='0'/>Food Regen Amount<br />" +
 	"<input type='text' id='foodReplenishRate1' value='0'/>Food Replenish Rate<br />" +
 	"<input type='text' id='foodReplenishAmount1' value='0'/>Food Replenish Amount<br />" +
 	"<input type='text' id='foodDensity1' value='0'/>Food Density<br />";
-	this.setParameters();
-	this.setup();
-	this.startInput();
-	/*
+    this.setParameters();
+    this.setup();
+    this.startInput();
+    /*
 	this.socket.on("connect", function () {
         console.log("Socket connected.")
 	});
 	*/
 
-  console.log('sim initialized');
-}
+    console.log('sim initialized');
+};
 
 GameEngine.prototype.setParameters = function() {
 	// main
@@ -287,8 +289,15 @@ GameEngine.prototype.setup = function() {
     ]);
     this.addEntity(this.popGraph);
 
-    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0], "worker/queen")
-    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0], "explore/exploit")
+    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Gene");
+    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Gene");
+    this.addEntity(this.roleGraph);
+    this.addEntity(this.forageGraph);
+
+    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram, 1300 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Meme");
+    this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram, 1300 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Meme");
+    this.addEntity(this.roleMemeGraph);
+    this.addEntity(this.forageMemeGraph);
 }
 
 GameEngine.prototype.start = function () {

@@ -19,6 +19,8 @@ function Mound(game, xPos, yPos) {
 
 	this.roleHistogram = [];
 	this.forageHistogram = [];
+	this.roleMemeHistogram = [];
+	this.forageMemeHistogram = [];
 
 	this.deathAges = {
 		breeders: [],
@@ -38,8 +40,8 @@ function Mound(game, xPos, yPos) {
 
 	this.graph1 = new Graph(game, this);
 	this.graph2 = new Graph2(game, this);
-	this.roleHistogramData = this.game.roleGraph;
-	this.forageHistogramData = this.game.forageGraph;
+	//this.roleHistogramData = this.game.roleGraph;
+	//this.forageHistogramData = this.game.forageGraph;
 
 	this.larvaPeriod = 0;
 	this.larvaPeriodData = [];
@@ -113,14 +115,14 @@ Mound.prototype.updatePeriod = function() {
 	this.larvaPeriod = 0;
 	this.foragePeriodData.push(this.foragePeriod);
 	this.foragePeriod = 0;
-	this.updateRoleHistogram();
-	this.updateForageHistogram();
+
+	this.updateHistograms();
+
 	this.updateBreedableAnts();
 	this.updateGeneration();
 	this.graph1.updatePeriod();
 	this.graph2.updatePeriod();
-	// this.roleHistogramData.updatePeriod();
-	// this.forageHistogramData.updatePeriod();
+
 	this.calculateAvgAges();
 
 	if(PRINT_RESULTS) {
@@ -196,8 +198,6 @@ Mound.prototype.drawPeriod = function() {
 
 	this.graph1.drawPeriod();
 	this.graph2.drawPeriod();
-	// this.roleHistogramData.drawPeriod();
-	// this.forageHistogramData.drawPeriod();
 }
 
 Mound.prototype.setTiles = function(tiles) {
@@ -294,11 +294,18 @@ Mound.prototype.canGrow = function() {
 		   (BREED_TOGGLE) /*&& this.foodStorage > EAT_AMOUNT)*/;
 }
 
-Mound.prototype.updateRoleHistogram = function() {
-	var roleHistogram = [];
+Mound.prototype.updateHistograms = function() {
+    var roleHistogram = [];
+    var forageHistogram = [];
+    var roleMemeHistogram = [];
+    var forageMemeHistogram = [];
+
 	for (var i = 0; i < 20; i++) {
-		roleHistogram.push(0);
-	}
+	    roleHistogram.push(0);
+	    roleMemeHistogram.push(0);
+	    forageHistogram.push(0);
+	    forageMemeHistogram.push(0);
+    }
 	for (var i = 0; i < this.colony.length; i++) {
 		var ant = this.colony[i];
 
@@ -313,10 +320,28 @@ Mound.prototype.updateRoleHistogram = function() {
 		//there is the potential that a ant with a antgene of exactly 1.0 getting mapped
 		//to 20 however, so I wrapped with a try-catch and it should even match
 		//the behavior of throwing all errors into the same bin.
-		if(ant.geneRole >= 0 && ant.geneRole < 1) {
-			roleHistogram[Math.trunc(ant.geneRole*20)]++;
+		if (ant.geneRole >= 0 && ant.geneRole < 1) {
+		    roleHistogram[Math.trunc(ant.geneRole * 20)]++;
 		} else {
-			roleHistogram[19]++;
+		    roleHistogram[19]++;
+		}
+
+		if (ant.geneForage >= 0 && ant.geneForage < 1) {
+		    forageHistogram[Math.trunc(ant.geneForage * 20)]++;
+		} else {
+		    forageHistogram[19]++;
+		}
+
+		if (ant.memeRole >= 0 && ant.memeRole < 1) {
+		    roleMemeHistogram[Math.trunc(ant.memeRole * 20)]++;
+		} else {
+		    roleMemeHistogram[19]++;
+		}
+
+		if (ant.memeForage >= 0 && ant.memeForage < 1) {
+		    forageMemeHistogram[Math.trunc(ant.memeForage * 20)]++;
+		} else {
+		    forageMemeHistogram[19]++;
 		}
 
 	}
@@ -324,26 +349,9 @@ Mound.prototype.updateRoleHistogram = function() {
 		console.log("breed/forage: " + roleHistogram);
 	}
 	this.roleHistogram.push(roleHistogram);
-}
-
-Mound.prototype.updateForageHistogram = function() {
-	var histogram = [];
-	for (var i = 0; i < 20; i++) {
-		histogram.push(0);
-	}
-	for (var i = 0; i < this.colony.length; i++) {
-		var ant = this.colony[i];
-		//see comments for roleHistogram above.
-		if(ant.geneForage >= 0 && ant.geneForage < 1) {
-			histogram[Math.trunc(ant.geneForage*20)]++;
-		} else {
-			histogram[19]++;
-		}
-	}
-	if(PRINT_RESULTS) {
-		console.log("exploit/explore: " + histogram);
-	}
-	this.forageHistogram.push(histogram);
+	this.forageHistogram.push(forageHistogram);
+	this.roleMemeHistogram.push(roleMemeHistogram);
+	this.forageMemeHistogram.push(forageMemeHistogram);
 }
 
 Mound.prototype.updateBreedableAnts = function() {

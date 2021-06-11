@@ -45,7 +45,7 @@
 <body onload="setupSeasons(document.getElementById('seasons').value)">
 	<p id="runName">s-f2-b5-ft-ftt-tttt</p>
 	<p id="filename">Run#<span id="runNum">1</span></p>
-    <canvas id="gameWorld" tabindex="1" width="1550" height="800" style="border: 1px solid brown; background: white"></canvas>
+    <canvas id="gameWorld" tabindex="1" width="1800" height="800" style="border: 1px solid brown; background: white"></canvas>
 	<br>
 	<div id="sim">
 		<button id="new">New Sim</button>
@@ -78,7 +78,7 @@
 		<input type="checkbox" id="breedToggle" />Breed without checking for enough food
 		<input type="checkbox" id="breedStandby" checked />Breeders wait when not able to breed
 		<br/>
-		<input type="checkbox" id="geneToggle" />Genes are expressed more extremely
+		<input type="checkbox" id="geneToggle" onclick="return false;"/>Genes are expressed more extremely (Depricated)
 		<input type="checkbox" id="randomOrQueueToggle" checked />Breeders line up(checked) or get picked randomly(unchecked) to breed
 		<input type="checkbox" id="sumOrMaxToggle" checked />Fitness is either calculated as the sum(checked) or max(unchecked)
 		<br />
