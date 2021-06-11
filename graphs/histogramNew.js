@@ -61,32 +61,30 @@ class HistogramNew{
       }
     }
     ctx.save();
+    ctx.lineWidth = this.lineWidth;
+    this.ctx.font = "12px Courier";
+    ctx.fillStyle = "#000000";
     if(!SIMPLE_INFO) {
-      ctx.lineWidth = this.lineWidth;
-      this.ctx.font = "12px Courier";
-      ctx.fillStyle = "#000000";
-
-      ctx.fillText("portion", this.x + this.sx + 20, this.y + this.sy + 10);
+      ctx.fillText("fract", this.x + this.sx + 20, this.y + this.sy + 10);
       ctx.fillText("actual", this.x + this.sx + 55, this.y + this.sy + 20);
 
       if(past > 1000000) {
         ctx.fillText("m-C# " + (past/1000000).toFixed(3), this.x, this.y + this.sy + 12);
-        ctx.fillText("m-C# " + (present/1000000).toFixed(3), this.x + this.sx - 70, this.y + this.sy + 12);
+        ctx.fillText("m-C# " + (present/1000000).toFixed(3), this.x + this.sx - 50, this.y + this.sy + 12);
       } else if (past > 1000) {
         ctx.fillText("k-C# " + (past/1000).toFixed(1), this.x, this.y + this.sy + 12);
-        ctx.fillText("k-C# " + (present/1000).toFixed(1), this.x + this.sx - 70, this.y + this.sy + 12);
+        ctx.fillText("k-C# " + (present/1000).toFixed(1), this.x + this.sx - 50, this.y + this.sy + 12);
       } else {
         ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
-        ctx.fillText("C# " + present, this.x + this.sx - 70, this.y + this.sy + 12);
+        ctx.fillText("C# " + present, this.x + this.sx - 50, this.y + this.sy + 12);
       }
-      ctx.restore();
     } else {
       ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
-      ctx.fillText("C# " + present, this.x + this.sx - 70, this.y + this.sy + 12);
+      ctx.fillText("C# " + present, this.x + this.sx - 50, this.y + this.sy + 12);
     }
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(this.x, this.y, this.sx, this.sy);
-    ctx.fillText(this.name, this.x + this.sx/2 - 50, this.y + this.sy + 12);
+    ctx.fillText(this.name, this.x + this.sx/2 - 40, this.y + this.sy + 12);
     ctx.restore();
   }
 
