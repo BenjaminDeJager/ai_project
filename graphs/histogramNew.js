@@ -3,13 +3,13 @@ class HistogramNew{
       game, pointer,
       x, y,
       sx, sy,
-      color
+      color, name
     /*, fieldPointers, fieldColors, fieldHistories, fieldBuckets, bucketFunctions tickStart, tickEnd*/) {
     Object.assign(this, {
       game,
       x, y,
       sx, sy,
-      color
+      color, name
       /*fieldPointers, //[<someEntity>.<someField>]
       fieldColors, //["red"]; the color to draw each parallel array's element(s).
       fieldHistories, // [[]]; a linear history of each fields value at each tick.
@@ -19,6 +19,7 @@ class HistogramNew{
 
     this.fieldHistory = pointer;
 
+    //scaling and dimensions.
     this.numBuckets = 20;
     this.numTicks = Math.round(TICK_DISPLAY);
     this.width = Math.trunc(this.sx / this.numTicks);
@@ -47,41 +48,47 @@ class HistogramNew{
 
     let val;
     for(var i = present; i > past; i--) {
-      let maxValue = Math.max(...(this.fieldHistory[present]));
+      let sumValue = this.fieldHistory[present].reduce(function (acc, x) {
+            return acc + x;
+        }, 0);
       for(var j = 0; j < this.numBuckets; j++) {
         val = this.fieldHistory[Math.max(0,i)][j];
-        this.fill(val/maxValue, i-past + missingTicks, j, this.width);
-        if (val != 0 && i == present) {
-          ctx.fillText((val/maxValue).toFixed(2), this.x + this.sx + 10, this.y + this.height*(j+1));
+        this.fill(val/sumValue, i-past + missingTicks, j, this.width);
+        if (!SIMPLE_INFO && val != 0 && i == present) {
+          ctx.fillText(j, this.x + this.sx + 5, this.y + this.height*(j+1));
+          ctx.fillText((val/sumValue).toFixed(2), this.x + this.sx + 25, this.y + this.height*(j+1));
           ctx.fillText(val, this.x + this.sx + 60, this.y + this.height*(j+1));
         }
       }
     }
-    ctx.fillText("portion", this.x + this.sx + 5, this.y + this.sy + 10);
-    ctx.fillText("actual", this.x + this.sx + 60, this.y + this.sy + 10);
-    //
-    // if(!SIMPLE_INFO) {
-    //   for(let k = 0; k < this.numBuckets; k++) {
-    //     this.fill((1*k)/this.numBuckets, this.numTicks + 65, (1*k), 10);
-    //     if(k%1 ==0) {
-    //       ctx.fillText(((1*k)/this.numBuckets).toFixed(2), this.x + this.sx + 60, this.y + this.height*(k/1+1));
-    //     }
-    //   }
-    // }
+    if(SIMPLE_INFO) {
+      ctx.save();
 
-    ctx.save();
-    ctx.strokeStyle = "#000000";
-    ctx.lineWidth = this.lineWidth;
-    this.ctx.font = "12px Courier";
-    ctx.fillStyle = "#000000";
-    ctx.strokeRect(this.x, this.y, this.sx, this.sy);
-    if(past > 1000) {
-      ctx.fillText("k-C# " + (past/1000).toFixed(1), this.x, this.y + this.sy + 12);
-      ctx.fillText("k-C# " + (present/1000).toFixed(1), this.x + this.sx - 50, this.y + this.sy + 12);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = this.lineWidth;
+      this.ctx.font = "12px Courier";
+      ctx.fillStyle = "#000000";
+
+      ctx.fillText("portion", this.x + this.sx + 25, this.y + this.sy + 13);
+      ctx.fillText("actual", this.x + this.sx + 60, this.y + this.sy + 13);
+      
+      ctx.strokeRect(this.x, this.y, this.sx, this.sy);
+      if(past > 1000000) {
+        ctx.fillText("k-C# " + (past/1000000).toFixed(3), this.x, this.y + this.sy + 12);
+        ctx.fillText("k-C# " + (present/1000000).toFixed(3), this.x + this.sx - 60, this.y + this.sy + 12);
+      } else if (past > 1000) {
+        ctx.fillText("k-C# " + (past/1000).toFixed(1), this.x, this.y + this.sy + 12);
+        ctx.fillText("k-C# " + (present/1000).toFixed(1), this.x + this.sx - 60, this.y + this.sy + 12);
+      } else {
+        ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
+        ctx.fillText("C# " + present, this.x + this.sx - 60, this.y + this.sy + 12);
+      }
     } else {
+      ctx.strokeRect(this.x, this.y, this.sx, this.sy);
       ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
-      ctx.fillText("C# " + present, this.x + this.sx - 50, this.y + this.sy + 12);
+      ctx.fillText("C# " + present, this.x + this.sx - 60, this.y + this.sy + 12);
     }
+    ctx.fillText(this.name, this.x + this.sx/2 - 40, this.y + this.sy + 12);
     ctx.restore();
 
     // if(this.timer > 0 && this.mouse) {
@@ -106,14 +113,19 @@ class HistogramNew{
     } else {
       var c = value * 99 + 1;
       c = 511 - Math.floor(Math.log(c) / Math.log(100) * 512);
-      let base = this.color;
+
       this.ctx.save();
       if (c > 255) {
           c = c - 256;
-          this.ctx.fillStyle = rgb(c*base[0]*0.5 + c*base[1], c*base[1]*0.5 + c*base[2], c*base[2]*0.5 + c*base[0]);
+
+          this.ctx.fillStyle = rgb(c, c, 255);
+          //we don't want to drop 2/3 of the color's components
+          //otherwise we lose the generalizablity of this class over the previous.
       } else {
-          //c = 255 - c;
-          this.ctx.fillStyle = rgb(c*base[0], c*base[1], c*base[2]);
+
+          this.ctx.fillStyle = rgb(0, 0, c);
+          //we don't want to drop 2/3 of the color's components
+          //otherwise we lose the generalizablity of this class over the previous.
       }
       this.ctx.fillRect(this.x + (x * this.width) - thick*2,
                     this.y + (y * this.height) - 1,

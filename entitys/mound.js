@@ -306,7 +306,7 @@ Mound.prototype.updateRoleHistogram = function() {
 		//in the range [0,1] to a integer between [0, 19] based on what multiple of
 		//0.05 they are (starting at 0).
 
-		//so if we multiply by 20 to to get [0,20] then floor/truc we get what we want.
+		//so if we multiply by 20 to to get [0,20] then floor/trunc we get what we want.
 		// I tested this and out of 20 million Math.random real-values
 		//in the range [0,1), exactly NONE came out different from the if-else tree.
 
