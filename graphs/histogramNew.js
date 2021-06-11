@@ -79,6 +79,7 @@ class HistogramNew{
         ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
         ctx.fillText("C# " + present, this.x + this.sx - 70, this.y + this.sy + 12);
       }
+      ctx.restore();
     } else {
       ctx.fillText("C# " + past, this.x, this.y + this.sy + 12);
       ctx.fillText("C# " + present, this.x + this.sx - 70, this.y + this.sy + 12);
