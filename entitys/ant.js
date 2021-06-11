@@ -24,34 +24,32 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.geneRole = this.geneRole < 0 ? 0 : this.geneRole;
 	this.geneForage = geneForage > 1 ? 1 : geneForage;
 	this.geneForage = this.geneForage < 0 ? 0 : this.geneForage;
-	this.meneRole = geneRole;
-	this.meneForage = geneForage;
-	this.RoleActual = this.geneRole;
-	this.ForageActual = this.geneForage;
+	this.memeRole = this.geneRole;
+	this.memeForage = this.geneForage;
 	if (EXTREME_GENE_TOGGLE) {
-		this.RoleActual = this.geneRole < 0.5 ?
+		this.memeRole = this.geneRole < 0.5 ?
 							  Math.pow(this.geneRole,2)*2:
 							  1-(Math.pow(1-this.geneRole,2)*2);
-		this.ForageActual = this.geneForage < 0.5 ?
+		this.memeForage = this.geneForage < 0.5 ?
 							  Math.pow(this.geneForage,2)*2:
 							  1-(Math.pow(1-this.geneForage,2)*2);
 	}
 
 	this.deathChance = GENE_LIFE_TOGGLE
-						? ((MAX_CHANCE_TO_DIE - MIN_CHANCE_TO_DIE) * this.RoleActual) + MIN_CHANCE_TO_DIE
+						? ((MAX_CHANCE_TO_DIE - MIN_CHANCE_TO_DIE) * this.memeRole) + MIN_CHANCE_TO_DIE
 						: MAX_CHANCE_TO_DIE/2;
 	this.maxEnergy = GENE_ENERGY_TOGGLE
-					? Math.ceil((MAX_ENERGY - MIN_ENERGY) * this.RoleActual + MIN_ENERGY)
+					? Math.ceil((MAX_ENERGY - MIN_ENERGY) * this.memeRole + MIN_ENERGY)
 					: Math.ceil(MAX_ENERGY/2);
 
 	this.energy = this.maxEnergy;
 
 	this.layTime = GENE_BREED_SPEED_TOGGLE
-					? Math.ceil((MAX_LAY_TIME - MIN_LAY_TIME) * this.RoleActual + MIN_LAY_TIME)
+					? Math.ceil((MAX_LAY_TIME - MIN_LAY_TIME) * this.memeRole + MIN_LAY_TIME)
 					: Math.ceil(MAX_LAY_TIME/2);
 
 	this.maxFood = GENE_FOOD_CARRY_TOGGLE
-					? Math.ceil((MAX_ANT_FOOD - MIN_ANT_FOOD) * this.RoleActual + MIN_ANT_FOOD)
+					? Math.ceil((MAX_ANT_FOOD - MIN_ANT_FOOD) * this.memeRole + MIN_ANT_FOOD)
 					: Math.ceil(MAX_ANT_FOOD/2);
 
 	this.foodCollection = Math.ceil(this.maxFood/5);
@@ -462,25 +460,16 @@ Ant.prototype.die = function(reason) {
 }
 
 Ant.prototype.chooseRole = function() {
-	// if over threshold for egg laying, attempt to lay egg
-
-	if(MENE_TOGGLE){
-		//if testing with menes, randomly get ant-peer's Menome values.
-		var neighbors = this.peers;
-		var randomPeer = neighbors[Math.round(Math.random()*neighbors.length)];
+	if(MEME_TOGGLE){
+		var randomPeer = this.peers[Math.round(Math.random()*this.peers.length)];
 		if(randomPeer) {
-			this.RoleActual = this.RoleActual+(this.RoleActual - randomPeer.RoleActual)/10;
-			//shift by 1/10th of the difference between our strategy and our peers.
-			if(MENOME_MUTATE_TOGGLE) {
-				this.RoleActual += MENE_MUTATE_RATE*(Math.random()*2-1);
-				//shift up/down by [-1,1), biased downward?
-			}
+			this.memeRole = randomPeer.memeRole;
 		}
 	}
 
-	if (ROLE_GENE_TOGGLE && Math.random() >= this.RoleActual) {
+	if (ROLE_GENE_TOGGLE && Math.random() >= this.memeRole) {  // if we randomly select breeder from our gene
 		this.attemptBreed();
-	} else if (!ROLE_GENE_TOGGLE && Math.random() >= 0.5) {
+	} else if (!ROLE_GENE_TOGGLE && Math.random() >= 0.5) { // or with a coin flip
 		this.attemptBreed();
 	} else { // forage otherwise
 		this.forage();
@@ -504,7 +493,7 @@ Ant.prototype.attemptBreed = function() {
 }
 
 Ant.prototype.forage = function() {
-	if (Math.random() >= this.geneForageActual) {
+	if (Math.random() >= this.genememeForage) {
 		this.role = EXPLOIT;
 	} else {
 		this.role = EXPLORE;
