@@ -792,11 +792,10 @@ GameEngine.prototype.updatePeriod = function () {
   PRINT_RESULTS = document.getElementById("printOngoingResults").checked;
   SIMPLE_INFO = document.getElementById("simple GUI").checked;
   DRAW_ANT_PORTION = document.getElementById("drawAntPortion").value;
+  DRAW_TILE_ABSTRACT = document.getElementById("drawTileabstraction").value;
 
-  let temp = document.getElementById("drawTileabstraction").value;
-  if(temp > 0){
-    DRAW_TILE_ABSTRACT = document.getElementById("drawTileabstraction").value;
-  }
+  // GRAPH_TIME =  document.getElementById("numCycles").value;
+  // GRAPH_SHIFT = document.getElementById("cycleShift").value;
 }
 
 GameEngine.prototype.loop = function () {
@@ -806,7 +805,6 @@ GameEngine.prototype.loop = function () {
 		this.draw();
 		this.drawPeriod();
 		this.isStepping = false;
-    this.mouse.handleMouse();
 	}
 	if (!this.isPaused) {
 		this.clockTick = this.timer.tick();
@@ -814,7 +812,8 @@ GameEngine.prototype.loop = function () {
 		this.updatePeriod();
 		this.draw();
 		this.drawPeriod();
-    this.mouse.handleMouse();
+    this.mouse.drawMouse();
+    this.mouse.updateMouse();
 	}
 }
 

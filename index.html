@@ -54,6 +54,9 @@
 		<button id="pause">Pause</button>
 		<button id="step">Step</button>
 	</div>
+  <!-- <p>Graph Parameters</p>
+  <input type="text" id="numCycles" value="360" /># cycles in the graph's<br />
+  <input type="text" id="cycleShift" value="0" /># cycles to shift the graphs by.<br /> -->
 	<div id="environment">
         <p>Environment Parameters</p>
 
@@ -62,6 +65,8 @@
         <input type="text" id="simDuration" value="200000"/>Simulation Duration<br />
 		<input type="text" id="updatePeriod" value="50"/>Cycles Per Tick<br />
 		<input type="text" id="drawPeriod" value="100"/>Cycles Per Simulation Draw<br />
+    <!-- <input type="text" id="numCycles" value="360" /> cycles in the graphs<br />
+    <input type="text" id="cycleShift" value="0" /> cycles to shift the graphs by<br /> -->
         <input type="text" id="maxFood" value="200"/>Max Food Value<br />
 		<input type="text" id="maxTotalFood" value="100000"/>Max Total Food On Map<br />
 		<input type="text" id="foodAbundance" value="0"/>Initial Food Abundance<br />
@@ -124,7 +129,7 @@
 	</p>
 
   <div>
-    <a>developer tools</a><br/>
+    <p>developer tools</p><br/>
     <input type="checkbox" id="downloadResults" /> download results of simulation if checked<br />
     <input type="checkbox" id="printOngoingResults" /> print Ongoing Results of simulation in console if checked<br />
     <input type="checkbox" id="simple GUI" />If checked, simply Info section and GUI<br />

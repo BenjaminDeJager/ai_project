@@ -36,6 +36,8 @@ class HistogramNew{
     this.r = this.color[0];
     this.g = this.color[1];
     this.b = this.color[2];
+
+    this.numForgotten = 0;
   }
 
   //incase other classes want access to whats being displayed.
@@ -63,7 +65,7 @@ class HistogramNew{
   }
 
   drawPeriod(ctx) {
-    this.ctx.clearRect(this.x, this.y, this.sx+80, this.sy+20);
+    this.ctx.clearRect(this.x, this.y, this.sx+100, this.sy+20);
 
     this.present = this.fieldHistory.length - 1;
     this.start = Math.min(this.present, Math.max(0, this.present - this.tickStart));
@@ -92,18 +94,18 @@ class HistogramNew{
     this.ctx.font = "12px Courier";
     ctx.fillStyle = "#000000";
     ctx.fillText(this.name, this.x + this.sx/2 - this.name.length*2, this.y + this.sy + 12);
-    ctx.fillText("C# " + this.end, this.x, this.y + this.sy + 12);
-    ctx.fillText("C# " + this.start, this.x + this.sx - 55, this.y + this.sy + 12);
+    ctx.fillText("C# " + this.end + this.numForgotten, this.x, this.y + this.sy + 12);
+    ctx.fillText("C# " + this.start + this.numForgotten, this.x + this.sx - 55, this.y + this.sy + 12);
     if(!SIMPLE_INFO) {
       ctx.fillText("fract", this.x + this.sx + 20, this.y + this.sy + 10);
       ctx.fillText("actual", this.x + this.sx + 55, this.y + this.sy + 20);
 
       this.ctx.font = "10px Courier";
       ctx.beginPath();
-      let delin = Math.round(this.numTicks/5);
+      let delin = Math.round(2*this.sx/3);
       let x;
       let y;
-      let dashSize = 2.5;
+      let dashSize = Math.floor(this.sy/this.numBuckets)/2;
       for(let i = this.start - this.start%delin; i > this.end; i-=delin) {
         x = this.x + (i-this.end)*this.width;
         if(this.fieldHistory[i][this.numBuckets-1] == 0) {
@@ -120,6 +122,10 @@ class HistogramNew{
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(this.x, this.y, this.sx, this.sy);
     ctx.restore();
+    if(this.fieldHistory.length > this.numTicks) {
+      this.fieldHistory.shift();
+      this.numForgotten++;
+    }
   }
 
   fill(value, x, y, thick, highlight) {

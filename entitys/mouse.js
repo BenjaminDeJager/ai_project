@@ -10,24 +10,18 @@ class Mouse{
     this.yOffset = document.getElementById('canvas');
     this.ctx = this.game.ctx;
     this.timer;
-    this.baseWait = 3;
-  }
-  handleMouse(){
-    this.updateMouse();
-    this.drawMouse();
+    this.baseWait = 2;
   }
 
   drawMouse(){
     let ctx = this.ctx;
     ctx.save();
-    ctx.beginPath();
-    ctx.fillStyle = this.colorPrimary;
-    ctx.strokeStyle = this.colorSecondary;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.arc(this.x, this.y, this.r - this.thickness, 0, 2 * Math.PI);
-    ctx.fill();
+    // ctx.beginPath();
+    // ctx.fillStyle = this.colorPrimary;
+    // ctx.strokeStyle = this.colorSecondary;
+    // ctx.beginPath();
+    // ctx.arc(this.x, this.y, this.r - this.thickness, 0, 2 * Math.PI);
+    // ctx.fill();
     if(HIGHLIGHT_CLICKS && this.timer > 0) {
       //highlight where last click was.
       this.highlightPoint(this.clickX, this.clickY);
