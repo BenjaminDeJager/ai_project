@@ -17,6 +17,7 @@ function GameEngine() {
 
     this.tiles = null;
     this.ctx = null;
+    this.canvas = document.getElementById("gameWorld");
 
     this.surfaceWidth = null;
     this.surfaceHeight = null;
@@ -43,8 +44,6 @@ function GameEngine() {
     this.roleMemeGraph;
     this.forageMemeGraph;
 
-    this.mouse;
-
     for (var i = 0; i < 9; i++) {
         this.avgAges.push({
             breeders: [],
@@ -65,8 +64,8 @@ GameEngine.prototype.init = function (ctx) {
     this.step = document.getElementById("step");
     this.save = document.getElementById("save");
     this.load = document.getElementById("load");
-    this.isClicked = false;
-    this.mouseClick;
+
+    this.mouse = new Mouse(this, "black", "grey", 5, 1);
 
     this.newMap = document.getElementById("newMap");
     this.new = document.getElementById("new");
@@ -289,13 +288,25 @@ GameEngine.prototype.setup = function() {
     ]);
     this.addEntity(this.popGraph);
 
-    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Gene");
-    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Gene");
+    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram,
+      800 + 10, 5,
+      360, 180,
+      [1, 0, 0], "Worker/Queen Gene");
+    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram,
+      800 + 10, 210,
+      360, 180,
+      [0, 1, 0], "Explore/Exploit Gene");
     this.addEntity(this.roleGraph);
     this.addEntity(this.forageGraph);
 
-    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram, 1250 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Meme");
-    this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram, 1250 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Meme");
+    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram,
+      1250 + 10, 5,
+      360, 180,
+      [1, 0, 0], "Worker/Queen Meme");
+    this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram,
+      1250 + 10, 210,
+      360, 180,
+      [0, 1, 0], "Explore/Exploit Meme");
     this.addEntity(this.roleMemeGraph);
     this.addEntity(this.forageMemeGraph);
 }
@@ -684,13 +695,21 @@ GameEngine.prototype.startInput = function () {
 		that.newGame();
 	});
 
-  this.ctx.canvas.addEventListener("click", function(event){
-    that.isClicked = true;
-    that.mouseClick = {x: event.clientX, y: event.clientY};
+  document.getElementById('canvas');
+
+  this.ctx.canvas.addEventListener('mousemove', e => {
+    that.mouse.x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
+    that.mouse.y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
   });
 
+  this.ctx.canvas.addEventListener('click', e => {
+    that.mouse.clickX = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
+    that.mouse.clickY = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
+    that.mouse.isClicked = true;
+    console.log("clicked: " + that.mouse.clickX + ", " + that.mouse.clickY)
+  });
 
-    console.log('Input started');
+  console.log('Input started');
 }
 
 GameEngine.prototype.addEntity = function (entity) {
@@ -787,6 +806,7 @@ GameEngine.prototype.loop = function () {
 		this.draw();
 		this.drawPeriod();
 		this.isStepping = false;
+    this.mouse.handleMouse();
 	}
 	if (!this.isPaused) {
 		this.clockTick = this.timer.tick();
@@ -794,9 +814,8 @@ GameEngine.prototype.loop = function () {
 		this.updatePeriod();
 		this.draw();
 		this.drawPeriod();
+    this.mouse.handleMouse();
 	}
-  this.isClicked = false;
-  this.mouseClick = null;
 }
 
 GameEngine.prototype.changeSeason = function () {
