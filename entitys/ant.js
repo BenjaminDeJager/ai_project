@@ -36,20 +36,20 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	}
 
 	this.deathChance = GENE_LIFE_TOGGLE
-						? ((MAX_CHANCE_TO_DIE - MIN_CHANCE_TO_DIE) * this.memeRole) + MIN_CHANCE_TO_DIE
+						? ((MAX_CHANCE_TO_DIE - MIN_CHANCE_TO_DIE) * this.geneRole) + MIN_CHANCE_TO_DIE
 						: MAX_CHANCE_TO_DIE/2;
 	this.maxEnergy = GENE_ENERGY_TOGGLE
-					? Math.ceil((MAX_ENERGY - MIN_ENERGY) * this.memeRole + MIN_ENERGY)
+					? Math.ceil((MAX_ENERGY - MIN_ENERGY) * this.geneRole + MIN_ENERGY)
 					: Math.ceil(MAX_ENERGY/2);
 
 	this.energy = this.maxEnergy;
 
 	this.layTime = GENE_BREED_SPEED_TOGGLE
-					? Math.ceil((MAX_LAY_TIME - MIN_LAY_TIME) * this.memeRole + MIN_LAY_TIME)
+					? Math.ceil((MAX_LAY_TIME - MIN_LAY_TIME) * this.geneRole + MIN_LAY_TIME)
 					: Math.ceil(MAX_LAY_TIME/2);
 
 	this.maxFood = GENE_FOOD_CARRY_TOGGLE
-					? Math.ceil((MAX_ANT_FOOD - MIN_ANT_FOOD) * this.memeRole + MIN_ANT_FOOD)
+					? Math.ceil((MAX_ANT_FOOD - MIN_ANT_FOOD) * this.geneRole + MIN_ANT_FOOD)
 					: Math.ceil(MAX_ANT_FOOD/2);
 
 	this.foodCollection = Math.ceil(this.maxFood/5);
@@ -460,14 +460,35 @@ Ant.prototype.die = function(reason) {
 }
 
 Ant.prototype.chooseRole = function() {
-	if(MEME_TOGGLE){
-		var randomPeer = this.peers[Math.round(Math.random()*this.peers.length)];
-		if(randomPeer) {
-			this.memeRole = randomPeer.memeRole;
-		}
+    if(MEME_TOGGLE){
+        var randomPeer;
+
+        if (SOCIAL_LEARNING) {
+            if (ELITE_TEACHERS) {
+                randomPeer = this.mound.breedable[randomInt(this.mound.breedable.length)];
+            } else {
+                randomPeer = this.peers[Math.round(Math.random() * this.peers.length)];
+            }
+
+            if (randomPeer) {
+                if (this.memeRole > randomPeer.memeRole) {
+                    this.memeRole -= Math.random() * Math.min(MAX_DEVIATION, this.memeRole - randomPeer.memeRole);
+                } else {
+                    this.memeRole += Math.random() * Math.min(MAX_DEVIATION, randomPeer.memeRole - this.memeRole);
+                }
+            }
+        }
+
+        if (INDIVIDUAL_LEARNING) {
+            var dev = Math.random() * MAX_DEVIATION;
+            dev = Math.random() >= 0.5 ? dev : -dev;
+
+            this.memeRole += dev;
+            this.memeRole = this.memeRole > 0 ? this.memeRole < 1 ? this.memeRole : 1 : 0;
+        }
 	}
 
-	if (ROLE_GENE_TOGGLE && Math.random() >= this.memeRole) {  // if we randomly select breeder from our gene
+	if (ROLE_GENE_TOGGLE && Math.random() >= this.memeRole) {  // if we randomly select breeder from our meme
 		this.attemptBreed();
 	} else if (!ROLE_GENE_TOGGLE && Math.random() >= 0.5) { // or with a coin flip
 		this.attemptBreed();
@@ -493,7 +514,7 @@ Ant.prototype.attemptBreed = function() {
 }
 
 Ant.prototype.forage = function() {
-	if (Math.random() >= this.genememeForage) {
+	if (Math.random() >= this.geneForage) {
 		this.role = EXPLOIT;
 	} else {
 		this.role = EXPLORE;
