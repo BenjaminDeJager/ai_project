@@ -14,10 +14,10 @@ window.requestAnimationFrame ||
 
 function GameEngine() {
     this.entities = [];
-    this.role
 
     this.tiles = null;
     this.ctx = null;
+    this.canvas = document.getElementById("gameWorld");
 
     this.surfaceWidth = null;
     this.surfaceHeight = null;
@@ -44,7 +44,6 @@ function GameEngine() {
     this.roleMemeGraph;
     this.forageMemeGraph;
 
-
     for (var i = 0; i < 9; i++) {
         this.avgAges.push({
             breeders: [],
@@ -65,8 +64,8 @@ GameEngine.prototype.init = function (ctx) {
     this.step = document.getElementById("step");
     this.save = document.getElementById("save");
     this.load = document.getElementById("load");
-    this.isClicked = false;
-    this.mouseClick;
+
+    this.mouse = new Mouse(this, "black", "grey", 5, 1);
 
     this.newMap = document.getElementById("newMap");
     this.new = document.getElementById("new");
@@ -289,13 +288,25 @@ GameEngine.prototype.setup = function() {
     ]);
     this.addEntity(this.popGraph);
 
-    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Gene");
-    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Gene");
+    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram,
+      800 + 10, 5,
+      360, 180,
+      [1, 0, 0], "Worker/Queen Gene");
+    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram,
+      800 + 10, 210,
+      360, 180,
+      [0, 1, 0], "Explore/Exploit Gene");
     this.addEntity(this.roleGraph);
     this.addEntity(this.forageGraph);
 
-    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram, 1300 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Meme");
-    this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram, 1300 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Meme");
+    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram,
+      1250 + 10, 5,
+      360, 180,
+      [1, 0, 0], "Worker/Queen Meme");
+    this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram,
+      1250 + 10, 210,
+      360, 180,
+      [0, 1, 0], "Explore/Exploit Meme");
     this.addEntity(this.roleMemeGraph);
     this.addEntity(this.forageMemeGraph);
 }
@@ -684,13 +695,21 @@ GameEngine.prototype.startInput = function () {
 		that.newGame();
 	});
 
-  this.ctx.canvas.addEventListener("click", function(event){
-    that.isClicked = true;
-    that.mouseClick = {x: event.clientX, y: event.clientY};
+  document.getElementById('canvas');
+
+  this.ctx.canvas.addEventListener('mousemove', e => {
+    that.mouse.x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
+    that.mouse.y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
   });
 
+  this.ctx.canvas.addEventListener('click', e => {
+    that.mouse.clickX = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
+    that.mouse.clickY = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
+    that.mouse.isClicked = true;
+    console.log("clicked: " + that.mouse.clickX + ", " + that.mouse.clickY)
+  });
 
-    console.log('Input started');
+  console.log('Input started');
 }
 
 GameEngine.prototype.addEntity = function (entity) {
@@ -757,6 +776,47 @@ GameEngine.prototype.update = function () {
 	this.seasonCounter++;
 }
 
+GameEngine.prototype.updatePeriod = function () {
+  var entitiesCount = this.entities.length;
+	if (this.updateCounter % UPDATE_PERIOD === 0) {
+		for (var i = 0; i < entitiesCount; i++) {
+			var entity = this.entities[i];
+			if (entity != undefined) {
+				entity.updatePeriod();
+			}
+		}
+
+		this.mound.updatePeriod();
+	}
+  DOWNLOAD_RESULTS = document.getElementById("downloadResults").checked;
+  PRINT_RESULTS = document.getElementById("printOngoingResults").checked;
+  SIMPLE_INFO = document.getElementById("simple GUI").checked;
+  DRAW_ANT_PORTION = document.getElementById("drawAntPortion").value;
+  DRAW_TILE_ABSTRACT = document.getElementById("drawTileabstraction").value;
+
+  // GRAPH_TIME =  document.getElementById("numCycles").value;
+  // GRAPH_SHIFT = document.getElementById("cycleShift").value;
+}
+
+GameEngine.prototype.loop = function () {
+	if (this.isStepping) {
+		this.updatePeriod();
+		this.update();
+		this.draw();
+		this.drawPeriod();
+		this.isStepping = false;
+	}
+	if (!this.isPaused) {
+		this.clockTick = this.timer.tick();
+		this.update();
+		this.updatePeriod();
+		this.draw();
+		this.drawPeriod();
+    this.mouse.drawMouse();
+    this.mouse.updateMouse();
+	}
+}
+
 GameEngine.prototype.changeSeason = function () {
 	this.seasonCounter = 0;
 	this.currentSeason = this.currentSeason + 1 > NUM_OF_SEASONS-1 ? 0 : this.currentSeason + 1;
@@ -775,48 +835,6 @@ GameEngine.prototype.changeSeason = function () {
 	for (var i = 0; i < this.tiles.length; i++) {
 		this.tiles[i].foodLevel = 0;
 	}
-}
-
-GameEngine.prototype.updatePeriod = function () {
-  var entitiesCount = this.entities.length;
-	if (this.updateCounter % UPDATE_PERIOD === 0) {
-		for (var i = 0; i < entitiesCount; i++) {
-			var entity = this.entities[i];
-			if (entity != undefined) {
-				entity.updatePeriod();
-			}
-		}
-
-		this.mound.updatePeriod();
-	}
-  DOWNLOAD_RESULTS = document.getElementById("downloadResults").checked;
-  PRINT_RESULTS = document.getElementById("printOngoingResults").checked;
-  SIMPLE_INFO = document.getElementById("simple GUI").checked;
-  DRAW_ANT_PORTION = document.getElementById("drawAntPortion").value;
-
-  let temp = document.getElementById("drawTileabstraction").value;
-  if(temp > 0){
-    DRAW_TILE_ABSTRACT = document.getElementById("drawTileabstraction").value;
-  }
-}
-
-GameEngine.prototype.loop = function () {
-	if (this.isStepping) {
-		this.updatePeriod();
-		this.update();
-		this.draw();
-		this.drawPeriod();
-		this.isStepping = false;
-	}
-	if (!this.isPaused) {
-		this.clockTick = this.timer.tick();
-		this.update();
-		this.updatePeriod();
-		this.draw();
-		this.drawPeriod();
-	}
-  this.isClicked = false;
-  this.mouseClick = null;
 }
 
 GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, hist2) {
@@ -903,22 +921,6 @@ GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, 
 
 	console.log(dataObj);
 	return str;
-}
-
-function Timer() {
-    this.simTime = 0;
-    this.maxStep = 0.05;
-    this.wallLastTimestamp = 0;
-}
-
-Timer.prototype.tick = function () {
-    var wallCurrent = Date.now();
-    var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
-    this.wallLastTimestamp = wallCurrent;
-
-    var simDelta = Math.min(wallDelta, this.maxStep);
-    this.simTime += simDelta;
-    return simDelta;
 }
 
 function setupSeasons(num) {
