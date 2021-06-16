@@ -116,3 +116,6 @@ var DOWNLOAD_RESULTS;
 var SIMPLE_INFO;
 var DRAW_ANT_PORTION;
 var DRAW_TILE_ABSTRACT;
+var HIGHLIGHT_CLICKS = true;
+var GRAPH_SHIFT = 0; //# cycles to shift the graphs by.
+var GRAPH_TIME = 360; //# cycles to have in the graphs.

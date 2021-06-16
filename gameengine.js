@@ -14,10 +14,10 @@ window.requestAnimationFrame ||
 
 function GameEngine() {
     this.entities = [];
-    this.role
 
     this.tiles = null;
     this.ctx = null;
+    this.canvas = document.getElementById("gameWorld");
 
     this.surfaceWidth = null;
     this.surfaceHeight = null;
@@ -43,10 +43,9 @@ function GameEngine() {
     this.forageGraph;
     this.roleMemeGraph;
     this.forageMemeGraph;
-
+  
     this.breedableGenes;
     this.breedableMemes;
-
 
     for (var i = 0; i < 9; i++) {
         this.avgAges.push({
@@ -68,8 +67,8 @@ GameEngine.prototype.init = function (ctx) {
     this.step = document.getElementById("step");
     this.save = document.getElementById("save");
     this.load = document.getElementById("load");
-    this.isClicked = false;
-    this.mouseClick;
+
+    this.mouse = new Mouse(this, "black", "grey", 5, 1);
 
     this.newMap = document.getElementById("newMap");
     this.new = document.getElementById("new");
@@ -351,18 +350,19 @@ GameEngine.prototype.setSettings = function() {
 			bWeight: 1
 		});
 	}
-/*
-	for (var i = 0; i < 8; i++) {
-		settings.push({
-			scatteredOrDense: false,
-			breedSpeed: true,
-			foodCarry: true,
-			energy: true,
-			fWeight: 1,
-			bWeight: 5
-		});
-	}
-*/
+	// for (var i = 0; i < 9; i++) {
+	// 	settings.push({
+	// 		roleToggle: true,
+	// 		scatteredOrDense: true,
+	// 		extremeGenes: false,
+	// 		breedLife: false,
+	// 		breedSpeed: false,
+	// 		foodCarry: false,
+	// 		energy: false,
+	// 		fWeight: 1,
+	// 		bWeight: 1
+	// 	});
+	// }
 
 	settings[0].foodCarry = true;
 	settings[0].energy = true;
@@ -376,6 +376,44 @@ GameEngine.prototype.setSettings = function() {
 	settings[2].foodCarry = true;
 	settings[2].bWeight = 9;
 	settings[2].fWeight = 2;
+  
+	// settings[0].roleToggle = false;
+  //
+	// settings[1].bWeight = 5;
+	// settings[1].fWeight = 2;
+  //
+	// settings[2].foodCarry = true;
+	// settings[2].energy = true;
+	// settings[2].bWeight = 7;
+	// settings[2].fWeight = 2;
+  //
+	// settings[3].breedLife = true;
+	// settings[3].breedSpeed = true;
+	// settings[3].bWeight = 5;
+	// settings[3].fWeight = 2;
+  //
+	// settings[4].breedLife = true;
+	// settings[4].breedSpeed = true;
+	// settings[4].foodCarry = true;
+	// settings[4].energy = true;
+	// settings[4].bWeight = 3;
+	// settings[4].fWeight = 2;
+  //
+	// settings[5].energy = true;
+	// settings[5].bWeight = 5;
+	// settings[5].fWeight = 2;
+  //
+	// settings[6].foodCarry = true;
+	// settings[6].bWeight = 6;
+	// settings[6].fWeight = 2;
+  //
+	// settings[7].breedSpeed = true;
+	// settings[7].bWeight = 5;
+	// settings[7].fWeight = 2;
+  //
+	// settings[8].breedLife = true;
+	// settings[8].bWeight = 5;
+	// settings[8].fWeight = 2;
 
 	/*
 	settings[5].breedSpeed = false;
@@ -668,13 +706,21 @@ GameEngine.prototype.startInput = function () {
 		that.newGame();
 	});
 
-  this.ctx.canvas.addEventListener("click", function(event){
-    that.isClicked = true;
-    that.mouseClick = {x: event.clientX, y: event.clientY};
+  document.getElementById('canvas');
+
+  this.ctx.canvas.addEventListener('mousemove', e => {
+    that.mouse.x = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
+    that.mouse.y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
   });
 
+  this.ctx.canvas.addEventListener('click', e => {
+    that.mouse.clickX = e.clientX - that.ctx.canvas.getBoundingClientRect().left;
+    that.mouse.clickY = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
+    that.mouse.isClicked = true;
+    console.log("clicked: " + that.mouse.clickX + ", " + that.mouse.clickY)
+  });
 
-    console.log('Input started');
+  console.log('Input started');
 }
 
 GameEngine.prototype.addEntity = function (entity) {
@@ -741,6 +787,47 @@ GameEngine.prototype.update = function () {
 	this.seasonCounter++;
 }
 
+GameEngine.prototype.updatePeriod = function () {
+  var entitiesCount = this.entities.length;
+	if (this.updateCounter % UPDATE_PERIOD === 0) {
+		for (var i = 0; i < entitiesCount; i++) {
+			var entity = this.entities[i];
+			if (entity != undefined) {
+				entity.updatePeriod();
+			}
+		}
+
+		this.mound.updatePeriod();
+	}
+  DOWNLOAD_RESULTS = document.getElementById("downloadResults").checked;
+  PRINT_RESULTS = document.getElementById("printOngoingResults").checked;
+  SIMPLE_INFO = document.getElementById("simple GUI").checked;
+  DRAW_ANT_PORTION = document.getElementById("drawAntPortion").value;
+  DRAW_TILE_ABSTRACT = document.getElementById("drawTileabstraction").value;
+
+  // GRAPH_TIME =  document.getElementById("numCycles").value;
+  // GRAPH_SHIFT = document.getElementById("cycleShift").value;
+}
+
+GameEngine.prototype.loop = function () {
+	if (this.isStepping) {
+		this.updatePeriod();
+		this.update();
+		this.draw();
+		this.drawPeriod();
+		this.isStepping = false;
+	}
+	if (!this.isPaused) {
+		this.clockTick = this.timer.tick();
+		this.update();
+		this.updatePeriod();
+		this.draw();
+		this.drawPeriod();
+    this.mouse.drawMouse();
+    this.mouse.updateMouse();
+	}
+}
+
 GameEngine.prototype.changeSeason = function () {
 	this.seasonCounter = 0;
 	this.currentSeason = this.currentSeason + 1 > NUM_OF_SEASONS-1 ? 0 : this.currentSeason + 1;
@@ -759,48 +846,6 @@ GameEngine.prototype.changeSeason = function () {
 	for (var i = 0; i < this.tiles.length; i++) {
 		this.tiles[i].foodLevel = 0;
 	}
-}
-
-GameEngine.prototype.updatePeriod = function () {
-  var entitiesCount = this.entities.length;
-	if (this.updateCounter % UPDATE_PERIOD === 0) {
-		for (var i = 0; i < entitiesCount; i++) {
-			var entity = this.entities[i];
-			if (entity != undefined) {
-				entity.updatePeriod();
-			}
-		}
-
-		this.mound.updatePeriod();
-	}
-  DOWNLOAD_RESULTS = document.getElementById("downloadResults").checked;
-  PRINT_RESULTS = document.getElementById("printOngoingResults").checked;
-  SIMPLE_INFO = document.getElementById("simple GUI").checked;
-  DRAW_ANT_PORTION = document.getElementById("drawAntPortion").value;
-
-  let temp = document.getElementById("drawTileabstraction").value;
-  if(temp > 0){
-    DRAW_TILE_ABSTRACT = document.getElementById("drawTileabstraction").value;
-  }
-}
-
-GameEngine.prototype.loop = function () {
-	if (this.isStepping) {
-		this.updatePeriod();
-		this.update();
-		this.draw();
-		this.drawPeriod();
-		this.isStepping = false;
-	}
-	if (!this.isPaused) {
-		this.clockTick = this.timer.tick();
-		this.update();
-		this.updatePeriod();
-		this.draw();
-		this.drawPeriod();
-	}
-  this.isClicked = false;
-  this.mouseClick = null;
 }
 
 GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, hist2) {
@@ -887,22 +932,6 @@ GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, 
 
 	console.log(dataObj);
 	return str;
-}
-
-function Timer() {
-    this.simTime = 0;
-    this.maxStep = 0.05;
-    this.wallLastTimestamp = 0;
-}
-
-Timer.prototype.tick = function () {
-    var wallCurrent = Date.now();
-    var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
-    this.wallLastTimestamp = wallCurrent;
-
-    var simDelta = Math.min(wallDelta, this.maxStep);
-    this.simTime += simDelta;
-    return simDelta;
 }
 
 function setupSeasons(num) {
