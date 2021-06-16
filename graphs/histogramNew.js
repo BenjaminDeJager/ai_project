@@ -94,8 +94,8 @@ class HistogramNew{
     this.ctx.font = "12px Courier";
     ctx.fillStyle = "#000000";
     ctx.fillText(this.name, this.x + this.sx/2 - this.name.length*2, this.y + this.sy + 12);
-    ctx.fillText("C# " + this.end + this.numForgotten, this.x, this.y + this.sy + 12);
-    ctx.fillText("C# " + this.start + this.numForgotten, this.x + this.sx - 55, this.y + this.sy + 12);
+    ctx.fillText("C# " + (this.end + this.numForgotten), this.x, this.y + this.sy + 12);
+    ctx.fillText("C# " + (this.start + this.numForgotten), this.x + this.sx - 55, this.y + this.sy + 12);
     if(!SIMPLE_INFO) {
       ctx.fillText("fract", this.x + this.sx + 20, this.y + this.sy + 10);
       ctx.fillText("actual", this.x + this.sx + 55, this.y + this.sy + 20);
