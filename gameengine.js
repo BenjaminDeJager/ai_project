@@ -44,6 +44,9 @@ function GameEngine() {
     this.roleMemeGraph;
     this.forageMemeGraph;
 
+    this.breedableGenes;
+    this.breedableMemes;
+
 
     for (var i = 0; i < 9; i++) {
         this.avgAges.push({
@@ -289,15 +292,20 @@ GameEngine.prototype.setup = function() {
     ]);
     this.addEntity(this.popGraph);
 
-    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Gene");
-    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Gene");
+    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0], "Queen (0) /Worker (19) Gene");
+    //this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0], "Exploit (0) /Explore (19) Gene");
     this.addEntity(this.roleGraph);
-    this.addEntity(this.forageGraph);
+    //this.addEntity(this.forageGraph);
 
-    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram, 1300 + 10, 5, 360, 180, [1, 0, 0], "Worker/Queen Meme");
-    this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram, 1300 + 10, 210, 360, 180, [0, 1, 0], "Explore/Exploit Meme");
+    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram, 1300 + 10, 5, 360, 180, [1, 0, 0], "Queen (0) /Worker (19) Meme");
+    //this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram, 1300 + 10, 210, 360, 180, [0, 1, 0], "Exploit (0) /Explore (19) Meme");
     this.addEntity(this.roleMemeGraph);
-    this.addEntity(this.forageMemeGraph);
+    //this.addEntity(this.forageMemeGraph);
+
+    this.breedableGenes = new HistogramNew(this, this.mound.breedableGeneHistogram, 800 + 10, 210, 360, 180, [0, 1, 0], "Breedable Genes");
+    this.breedableMemes = new HistogramNew(this, this.mound.breedableMemeHistogram, 1300 + 10, 210, 360, 180, [0, 1, 0], "Breedable Memes");
+    this.addEntity(this.breedableGenes);
+    this.addEntity(this.breedableMemes);
 }
 
 GameEngine.prototype.start = function () {
@@ -330,7 +338,7 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 9; i++) {
+	for (var i = 0; i < 3; i++) {
 		settings.push({
 			roleToggle: true,
 			scatteredOrDense: true,
@@ -355,43 +363,19 @@ GameEngine.prototype.setSettings = function() {
 		});
 	}
 */
-	settings[0].roleToggle = false;
 
-	settings[1].bWeight = 5;
-	settings[1].fWeight = 2;
+	settings[0].foodCarry = true;
+	settings[0].energy = true;
+	settings[0].bWeight = 4;
+	settings[0].fWeight = 1;
+
+	settings[1].energy = true;
+	settings[1].bWeight = 3;
+	settings[1].fWeight = 1;
 
 	settings[2].foodCarry = true;
-	settings[2].energy = true;
-	settings[2].bWeight = 7;
+	settings[2].bWeight = 9;
 	settings[2].fWeight = 2;
-
-	settings[3].breedLife = true;
-	settings[3].breedSpeed = true;
-	settings[3].bWeight = 5;
-	settings[3].fWeight = 2;
-
-	settings[4].breedLife = true;
-	settings[4].breedSpeed = true;
-	settings[4].foodCarry = true;
-	settings[4].energy = true;
-	settings[4].bWeight = 3;
-	settings[4].fWeight = 2;
-
-	settings[5].energy = true;
-	settings[5].bWeight = 5;
-	settings[5].fWeight = 2;
-
-	settings[6].foodCarry = true;
-	settings[6].bWeight = 6;
-	settings[6].fWeight = 2;
-
-	settings[7].breedSpeed = true;
-	settings[7].bWeight = 5;
-	settings[7].fWeight = 2;
-
-	settings[8].breedLife = true;
-	settings[8].bWeight = 5;
-	settings[8].fWeight = 2;
 
 	/*
 	settings[5].breedSpeed = false;
@@ -449,20 +433,20 @@ GameEngine.prototype.setSettings = function() {
 GameEngine.prototype.runNextSetting = function() {
 	var limit = this.settings.length * 5;
 	if(this.runNum < limit) {
-		if (this.currentSetting !== -1) {
-			/*
+	    if (this.currentSetting !== -1) {
+	        /*
 			var er = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2,
 				this.mound.roleHistogramData, this.mound.forageHistogramData);
 				*/
-			this.avgAges[this.currentSetting].breeders.push(this.mound.averageAges.breeders);
-			this.avgAges[this.currentSetting].generalists.push(this.mound.averageAges.generalists);
-			this.avgAges[this.currentSetting].foragers.push(this.mound.averageAges.foragers);
-			this.avgAges[this.currentSetting].total.push(this.mound.averageAges.total);
-      if(DOWNLOAD_RESULTS) {
-        var avgObj = JSON.stringify(this.avgAges);
-        this.download(document.getElementById("runName").textContent+".txt", avgObj);
-      }
-		}
+	        this.avgAges[this.currentSetting].breeders.push(this.mound.averageAges.breeders);
+	        this.avgAges[this.currentSetting].generalists.push(this.mound.averageAges.generalists);
+	        this.avgAges[this.currentSetting].foragers.push(this.mound.averageAges.foragers);
+	        this.avgAges[this.currentSetting].total.push(this.mound.averageAges.total);
+	        if (DOWNLOAD_RESULTS) {
+	            var avgObj = JSON.stringify(this.avgAges);
+	            this.download(document.getElementById("runName").textContent + ".txt", avgObj);
+	        }
+	    }
 
 		this.currentSetting = (this.currentSetting + 1) % this.settings.length;
 

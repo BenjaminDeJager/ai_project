@@ -22,6 +22,9 @@ function Mound(game, xPos, yPos) {
 	this.roleMemeHistogram = [];
 	this.forageMemeHistogram = [];
 
+	this.breedableGeneHistogram = [];
+	this.breedableMemeHistogram = [];
+    
 	this.deathAges = {
 		breeders: [],
 		generalists: [],
@@ -300,51 +303,83 @@ Mound.prototype.updateHistograms = function() {
     var roleMemeHistogram = [];
     var forageMemeHistogram = [];
 
+    var breedableGeneHistogram = [];
+    var breedableMemeHistogram = [];
+
 	for (var i = 0; i < 20; i++) {
 	    roleHistogram.push(0);
 	    roleMemeHistogram.push(0);
 	    forageHistogram.push(0);
 	    forageMemeHistogram.push(0);
+	    breedableGeneHistogram.push(0);
+	    breedableMemeHistogram.push(0);
     }
 	for (var i = 0; i < this.colony.length; i++) {
-		var ant = this.colony[i];
+	    var ant = this.colony[i];
 
-		//we want a function that converts a particular ant.geneRole real
-		//in the range [0,1] to a integer between [0, 19] based on what multiple of
-		//0.05 they are (starting at 0).
+	    //we want a function that converts a particular ant.geneRole real
+	    //in the range [0,1] to a integer between [0, 19] based on what multiple of
+	    //0.05 they are (starting at 0).
 
-		//so if we multiply by 20 to to get [0,20] then floor/trunc we get what we want.
-		// I tested this and out of 20 million Math.random real-values
-		//in the range [0,1), exactly NONE came out different from the if-else tree.
+	    //so if we multiply by 20 to to get [0,20] then floor/trunc we get what we want.
+	    // I tested this and out of 20 million Math.random real-values
+	    //in the range [0,1), exactly NONE came out different from the if-else tree.
 
-		//there is the potential that a ant with a antgene of exactly 1.0 getting mapped
-		//to 20 however, so I wrapped with a try-catch and it should even match
-		//the behavior of throwing all errors into the same bin.
-		if (ant.geneRole >= 0 && ant.geneRole < 1) {
-		    roleHistogram[Math.trunc(ant.geneRole * 20)]++;
-		} else {
-		    roleHistogram[19]++;
-		}
+	    //there is the potential that a ant with a antgene of exactly 1.0 getting mapped
+	    //to 20 however, so I wrapped with a try-catch and it should even match
+	    //the behavior of throwing all errors into the same bin.
+	    if (ant.geneRole >= 0 && ant.geneRole < 1) {
+	        roleHistogram[Math.trunc(ant.geneRole * 20)]++;
+	    } else {
+	        roleHistogram[19]++;
+	    }
 
-		if (ant.geneForage >= 0 && ant.geneForage < 1) {
-		    forageHistogram[Math.trunc(ant.geneForage * 20)]++;
-		} else {
-		    forageHistogram[19]++;
-		}
+	    if (ant.geneForage >= 0 && ant.geneForage < 1) {
+	        forageHistogram[Math.trunc(ant.geneForage * 20)]++;
+	    } else {
+	        forageHistogram[19]++;
+	    }
 
-		if (ant.memeRole >= 0 && ant.memeRole < 1) {
-		    roleMemeHistogram[Math.trunc(ant.memeRole * 20)]++;
-		} else {
-		    roleMemeHistogram[19]++;
-		}
+	    if (ant.memeRole >= 0 && ant.memeRole < 1) {
+	        roleMemeHistogram[Math.trunc(ant.memeRole * 20)]++;
+	    } else {
+	        roleMemeHistogram[19]++;
+	    }
 
-		if (ant.memeForage >= 0 && ant.memeForage < 1) {
-		    forageMemeHistogram[Math.trunc(ant.memeForage * 20)]++;
-		} else {
-		    forageMemeHistogram[19]++;
-		}
-
+	    if (ant.memeForage >= 0 && ant.memeForage < 1) {
+	        forageMemeHistogram[Math.trunc(ant.memeForage * 20)]++;
+	    } else {
+	        forageMemeHistogram[19]++;
+	    }
 	}
+
+	for (var i = 0; i < this.breedable.length; i++) {
+	    var ant = this.breedable[i];
+
+	    //we want a function that converts a particular ant.geneRole real
+	    //in the range [0,1] to a integer between [0, 19] based on what multiple of
+	    //0.05 they are (starting at 0).
+
+	    //so if we multiply by 20 to to get [0,20] then floor/trunc we get what we want.
+	    // I tested this and out of 20 million Math.random real-values
+	    //in the range [0,1), exactly NONE came out different from the if-else tree.
+
+	    //there is the potential that a ant with a antgene of exactly 1.0 getting mapped
+	    //to 20 however, so I wrapped with a try-catch and it should even match
+	    //the behavior of throwing all errors into the same bin.
+	    if (ant.geneRole >= 0 && ant.geneRole < 1) {
+	        breedableGeneHistogram[Math.trunc(ant.geneRole * 20)]++;
+	    } else {
+	        breedableGeneHistogram[19]++;
+	    }
+
+	    if (ant.memeRole >= 0 && ant.memeRole < 1) {
+	        breedableMemeHistogram[Math.trunc(ant.memeRole * 20)]++;
+	    } else {
+	        breedableMemeHistogram[19]++;
+	    }
+	}
+
 	if(PRINT_RESULTS) {
 		console.log("breed/forage: " + roleHistogram);
 	}
@@ -352,6 +387,9 @@ Mound.prototype.updateHistograms = function() {
 	this.forageHistogram.push(forageHistogram);
 	this.roleMemeHistogram.push(roleMemeHistogram);
 	this.forageMemeHistogram.push(forageMemeHistogram);
+
+	this.breedableGeneHistogram.push(breedableGeneHistogram);
+	this.breedableMemeHistogram.push(breedableMemeHistogram);
 }
 
 Mound.prototype.updateBreedableAnts = function() {
