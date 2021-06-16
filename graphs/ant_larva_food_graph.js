@@ -6,6 +6,7 @@ function Graph(game, mound) {
 	this.game = game;
 	this.mound.ungatheredFoodData = [];
 	this.ungatheredFoodData = this.mound.ungatheredFoodData;
+	this.wantFood = [];
 	this.foodData = [];
 //	this.antData.push(mound.antCount);
 //	this.larvaData.push(mound.larvaCount);
@@ -15,6 +16,7 @@ function Graph(game, mound) {
 }
 
 Graph.prototype.update = function () {
+
 }
 
 Graph.prototype.updatePeriod = function() {
@@ -23,6 +25,7 @@ Graph.prototype.updatePeriod = function() {
 	}, 0)));
 
 	this.foodData.push(Math.floor(this.mound.foodStorage/EAT_AMOUNT));
+	this.wantFood.push(Math.floor((this.mound.larvaCount+this.mound.antCount)*2));
 	this.updateMax();
 }
 
@@ -99,6 +102,36 @@ Graph.prototype.drawPeriod = function(ctx) {
 		this.ctx.fillText(firstTick, this.x, this.y+this.ySize+10);
 		this.ctx.textAlign = "right";
 		this.ctx.fillText(this.mound.tick-1, this.x+this.xSize-5, this.y+this.ySize+10);
+
+		//desired amount of food (see canGrow in mound.js).
+		this.ctx.strokeStyle = "#AADC00";
+		this.ctx.beginPath();
+		xPos = this.x;
+		yPos = yPos = this.mound.tick > TICK_DISPLAY ? this.y+this.ySize-Math.floor(this.wantFood[this.mound.tick-TICK_DISPLAY]/this.maxVal*this.ySize)
+										   : this.y+this.ySize-Math.floor(this.wantFood[0]/this.maxVal*this.ySize);
+		this.ctx.moveTo(xPos, yPos);
+
+		var length = this.mound.tick > TICK_DISPLAY ?
+					 TICK_DISPLAY : this.wantFood.length;
+
+		for (var i = 1; i < length; i++) {
+			var index = this.mound.tick > TICK_DISPLAY ?
+						this.mound.tick-TICK_DISPLAY-1+i : i;
+			xPos++;
+			yPos = this.y+this.ySize-Math.floor(this.wantFood[index]/this.maxVal*this.ySize);
+
+			if (yPos <= 0) {
+				yPos = 0;
+			}
+
+			this.ctx.lineTo(xPos, yPos);
+		}
+		this.ctx.stroke();
+		this.ctx.closePath();
+
+		this.ctx.strokeStyle = "#AADC00";
+		this.ctx.fillStyle = "#AADC00";
+		this.ctx.fillText(("desired:"+this.wantFood[this.wantFood.length-1]), this.x+this.xSize+5, yPos+10);
 	}
 	this.ctx.strokeStyle = "#000000";
 	this.ctx.lineWidth = 1;

@@ -271,44 +271,61 @@ GameEngine.prototype.setup = function() {
 		this.mound.spawnAnt();
 	}
 
-  this.popGraph = new LineGraph(this,
-    0, 1170, //location of top left corner
-    360, 180, //xSize, ySize
-    [
-      { pointer: this.mound.antCount,
-        color: "red",
-        history: [] //pull array from a "top-level" history array (in mound atm, move to game engine?)
-        //at end of experiment, a "data manager" can manage the storage of data in server.
-      },
-      {
-        pointer: this.mound.larvaCount,
-        color: "green",
-        history: []
-      }
-    ]);
-    this.addEntity(this.popGraph);
+  // this.popGraph = new LineGraph(this,
+  //   1250 + 10, 210,
+  //   360, 180, //xSize, ySize
+  //   [
+  //     { pointer: this.mound.antCount,
+  //       color: "red",
+  //       history: [] //pull array from a "top-level" history array (in mound atm, move to game engine?)
+  //       //at end of experiment, a "data manager" can manage the storage of data in server.
+  //     },
+  //     {
+  //       pointer: this.mound.larvaCount,
+  //       color: "green",
+  //       history: []
+  //     }
+  //   ]);
+  //   this.addEntity(this.popGraph);
+  //
+  //   this.roleLineGraph = new LineGraph(this,
+  //     800 + 10, 210,
+  //     360, 180, //xSize, ySize
+  //     [
+  //       { pointer: this.mound.breedable.length,
+  //         color: "orange",
+  //         history: [] //pull array from a "top-level" history array (in mound atm, move to game engine?)
+  //         //at end of experiment, a "data manager" can manage the storage of data in server.
+  //       },
+  //       {
+  //         pointer: this.mound.standby.length,
+  //         color: "brown",
+  //         history: []
+  //       }
+  //     ]);
+  //   this.addEntity(this.roleLineGraph);
 
     this.roleGraph = new HistogramNew(this, this.mound.roleHistogram,
       800 + 10, 5,
       360, 180,
       [1, 0, 0], "Worker/Queen Gene");
-    this.forageGraph = new HistogramNew(this, this.mound.forageHistogram,
-      800 + 10, 210,
-      360, 180,
-      [0, 1, 0], "Explore/Exploit Gene");
     this.addEntity(this.roleGraph);
-    this.addEntity(this.forageGraph);
+    // this.forageGraph = new HistogramNew(this, this.mound.forageHistogram,
+    //   800 + 10, 210,
+    //   360, 180,
+    //   [0, 1, 0], "Explore/Exploit Gene");
+    // this.addEntity(this.forageGraph);
 
     this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram,
       1250 + 10, 5,
       360, 180,
       [1, 0, 0], "Worker/Queen Meme");
-    this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram,
-      1250 + 10, 210,
-      360, 180,
-      [0, 1, 0], "Explore/Exploit Meme");
     this.addEntity(this.roleMemeGraph);
-    this.addEntity(this.forageMemeGraph);
+    // this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram,
+    //   1250 + 10, 210,
+    //   360, 180,
+    //   [0, 1, 0], "Explore/Exploit Meme");
+    // this.addEntity(this.forageMemeGraph);
 }
 
 GameEngine.prototype.start = function () {
@@ -341,19 +358,19 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 9; i++) {
-		settings.push({
-			roleToggle: true,
-			scatteredOrDense: true,
-			extremeGenes: false,
-			breedLife: false,
-			breedSpeed: false,
-			foodCarry: false,
-			energy: false,
-			fWeight: 1,
-			bWeight: 1
-		});
-	}
+	// for (var i = 0; i < 9; i++) {
+	// 	settings.push({
+	// 		roleToggle: true,
+	// 		scatteredOrDense: true,
+	// 		extremeGenes: false,
+	// 		breedLife: false,
+	// 		breedSpeed: false,
+	// 		foodCarry: false,
+	// 		energy: false,
+	// 		fWeight: 1,
+	// 		bWeight: 1
+	// 	});
+	// }
 /*
 	for (var i = 0; i < 8; i++) {
 		settings.push({
@@ -366,43 +383,43 @@ GameEngine.prototype.setSettings = function() {
 		});
 	}
 */
-	settings[0].roleToggle = false;
-
-	settings[1].bWeight = 5;
-	settings[1].fWeight = 2;
-
-	settings[2].foodCarry = true;
-	settings[2].energy = true;
-	settings[2].bWeight = 7;
-	settings[2].fWeight = 2;
-
-	settings[3].breedLife = true;
-	settings[3].breedSpeed = true;
-	settings[3].bWeight = 5;
-	settings[3].fWeight = 2;
-
-	settings[4].breedLife = true;
-	settings[4].breedSpeed = true;
-	settings[4].foodCarry = true;
-	settings[4].energy = true;
-	settings[4].bWeight = 3;
-	settings[4].fWeight = 2;
-
-	settings[5].energy = true;
-	settings[5].bWeight = 5;
-	settings[5].fWeight = 2;
-
-	settings[6].foodCarry = true;
-	settings[6].bWeight = 6;
-	settings[6].fWeight = 2;
-
-	settings[7].breedSpeed = true;
-	settings[7].bWeight = 5;
-	settings[7].fWeight = 2;
-
-	settings[8].breedLife = true;
-	settings[8].bWeight = 5;
-	settings[8].fWeight = 2;
+	// settings[0].roleToggle = false;
+  //
+	// settings[1].bWeight = 5;
+	// settings[1].fWeight = 2;
+  //
+	// settings[2].foodCarry = true;
+	// settings[2].energy = true;
+	// settings[2].bWeight = 7;
+	// settings[2].fWeight = 2;
+  //
+	// settings[3].breedLife = true;
+	// settings[3].breedSpeed = true;
+	// settings[3].bWeight = 5;
+	// settings[3].fWeight = 2;
+  //
+	// settings[4].breedLife = true;
+	// settings[4].breedSpeed = true;
+	// settings[4].foodCarry = true;
+	// settings[4].energy = true;
+	// settings[4].bWeight = 3;
+	// settings[4].fWeight = 2;
+  //
+	// settings[5].energy = true;
+	// settings[5].bWeight = 5;
+	// settings[5].fWeight = 2;
+  //
+	// settings[6].foodCarry = true;
+	// settings[6].bWeight = 6;
+	// settings[6].fWeight = 2;
+  //
+	// settings[7].breedSpeed = true;
+	// settings[7].bWeight = 5;
+	// settings[7].fWeight = 2;
+  //
+	// settings[8].breedLife = true;
+	// settings[8].bWeight = 5;
+	// settings[8].fWeight = 2;
 
 	/*
 	settings[5].breedSpeed = false;
