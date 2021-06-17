@@ -1,11 +1,11 @@
-class HistogramNew{
+class HistogramNew {
   constructor (
-      game, pointer,
+      game, pointer, arrayPointer, fieldPointer,
       x, y,
       sx, sy,
       color, name) {
     Object.assign(this, {
-      game,
+      game, pointer, arrayPointer, fieldPointer,
       x, y,
       sx, sy,
       color, name});
@@ -22,6 +22,7 @@ class HistogramNew{
     this.timer = 0;
     this.baseWait = 3;
     this.start;
+    this.end;
 
     this.removeFromWorld = false;
     this.lineWidth = 1;
@@ -48,20 +49,38 @@ class HistogramNew{
   }
 
   updatePeriod() {
-    let mouse = this.game.mouse
-    if(mouse.timer > 0 && mouse.clickX != this.lastClick.x && mouse.clickY != this.lastClick.y
-      && mouse.clickX > this.x && mouse.clickX < this.x + this.sx
-      && mouse.clickY > this.y && mouse.clickY < this.y + this.sy)
-      //been within 3 seconds of clicking and inside this graph and not new click.
-    {
-      this.lastClick.hasClick = true;
-      this.lastClick.x = mouse.clickX;
-      this.lastClick.y = mouse.clickY;
-      this.timer = this.baseWait;
-      this.getIndexAt(this.lastClick.x - this.x, this.lastClick.y - this.y);
-    } else if (mouse.timer > 0) {
-      this.timer -= this.game.clockTick;
+    var newHistogram = [];
+
+    for(var i = 0; i< this.numBuckets; i++) {
+      newHistogram.push(0);
     }
+
+    for (var i = 0; i < this.arrayPointer.length; i++) {
+      var element = this.arrayPointer[i];
+      if (element[this.fieldPointer] >= 0 && element[this.fieldPointer] < 1) {
+	        newHistogram[Math.trunc(element[this.fieldPointer] * this.numBuckets)]++;
+	    } else {
+	        newHistogram[this.numBuckets-1]++;
+	    }
+    }
+
+    this.fieldHistory.push(newHistogram);
+    // let mouse = this.game.mouse
+    // if(mouse.timer > 0 && mouse.clickX != this.lastClick.x && mouse.clickY != this.lastClick.y
+    //   && mouse.clickX > this.x && mouse.clickX < this.x + this.sx
+    //   && mouse.clickY > this.y && mouse.clickY < this.y + this.sy)
+    //   //been within 3 seconds of clicking and inside this graph and not new click.
+    // {
+    //   this.lastClick.hasClick = true;
+    //   this.lastClick.x = mouse.clickX;
+    //   this.lastClick.y = mouse.clickY;
+    //   this.timer = this.baseWait;
+    //   this.getIndexAt(this.lastClick.x - this.x, this.lastClick.y - this.y);
+    // } else if (mouse.timer > 0) {
+    //   this.timer -= this.game.clockTick;
+    // }
+
+
   }
 
   drawPeriod(ctx) {
@@ -94,7 +113,7 @@ class HistogramNew{
     ctx.lineWidth = this.lineWidth;
     this.ctx.font = "12px Courier";
     ctx.fillStyle = "#000000";
-    ctx.fillText(this.name, this.x + this.sx/2 - this.name.length*2, this.y + this.sy + 12);
+    ctx.fillText(this.name, this.x + this.sx/2 - this.name.length*3, this.y + this.sy + 12);
     ctx.fillText("C# " + (this.end + this.numForgotten), this.x, this.y + this.sy + 12);
     ctx.fillText("C# " + (this.start + this.numForgotten), this.x + this.sx - 55, this.y + this.sy + 12);
     if(!SIMPLE_INFO) {

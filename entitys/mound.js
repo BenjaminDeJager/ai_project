@@ -24,7 +24,7 @@ function Mound(game, xPos, yPos) {
 
 	this.breedableGeneHistogram = [];
 	this.breedableMemeHistogram = [];
-    
+
 	this.deathAges = {
 		breeders: [],
 		generalists: [],
@@ -118,8 +118,6 @@ Mound.prototype.updatePeriod = function() {
 	this.larvaPeriod = 0;
 	this.foragePeriodData.push(this.foragePeriod);
 	this.foragePeriod = 0;
-
-	this.updateHistograms();
 
 	this.updateBreedableAnts();
 	this.updateGeneration();
@@ -297,104 +295,11 @@ Mound.prototype.canGrow = function() {
 		   (BREED_TOGGLE) /*&& this.foodStorage > EAT_AMOUNT)*/;
 }
 
-Mound.prototype.updateHistograms = function() {
-    var roleHistogram = [];
-    var forageHistogram = [];
-    var roleMemeHistogram = [];
-    var forageMemeHistogram = [];
-
-    var breedableGeneHistogram = [];
-    var breedableMemeHistogram = [];
-
-	for (var i = 0; i < 20; i++) {
-	    roleHistogram.push(0);
-	    roleMemeHistogram.push(0);
-	    forageHistogram.push(0);
-	    forageMemeHistogram.push(0);
-	    breedableGeneHistogram.push(0);
-	    breedableMemeHistogram.push(0);
-    }
-	for (var i = 0; i < this.colony.length; i++) {
-	    var ant = this.colony[i];
-
-	    //we want a function that converts a particular ant.geneRole real
-	    //in the range [0,1] to a integer between [0, 19] based on what multiple of
-	    //0.05 they are (starting at 0).
-
-	    //so if we multiply by 20 to to get [0,20] then floor/trunc we get what we want.
-	    // I tested this and out of 20 million Math.random real-values
-	    //in the range [0,1), exactly NONE came out different from the if-else tree.
-
-	    //there is the potential that a ant with a antgene of exactly 1.0 getting mapped
-	    //to 20 however, so I wrapped with a try-catch and it should even match
-	    //the behavior of throwing all errors into the same bin.
-	    if (ant.geneRole >= 0 && ant.geneRole < 1) {
-	        roleHistogram[Math.trunc(ant.geneRole * 20)]++;
-	    } else {
-	        roleHistogram[19]++;
-	    }
-
-	    if (ant.geneForage >= 0 && ant.geneForage < 1) {
-	        forageHistogram[Math.trunc(ant.geneForage * 20)]++;
-	    } else {
-	        forageHistogram[19]++;
-	    }
-
-	    if (ant.memeRole >= 0 && ant.memeRole < 1) {
-	        roleMemeHistogram[Math.trunc(ant.memeRole * 20)]++;
-	    } else {
-	        roleMemeHistogram[19]++;
-	    }
-
-	    if (ant.memeForage >= 0 && ant.memeForage < 1) {
-	        forageMemeHistogram[Math.trunc(ant.memeForage * 20)]++;
-	    } else {
-	        forageMemeHistogram[19]++;
-	    }
-	}
-
-	for (var i = 0; i < this.breedable.length; i++) {
-	    var ant = this.breedable[i];
-
-	    //we want a function that converts a particular ant.geneRole real
-	    //in the range [0,1] to a integer between [0, 19] based on what multiple of
-	    //0.05 they are (starting at 0).
-
-	    //so if we multiply by 20 to to get [0,20] then floor/trunc we get what we want.
-	    // I tested this and out of 20 million Math.random real-values
-	    //in the range [0,1), exactly NONE came out different from the if-else tree.
-
-	    //there is the potential that a ant with a antgene of exactly 1.0 getting mapped
-	    //to 20 however, so I wrapped with a try-catch and it should even match
-	    //the behavior of throwing all errors into the same bin.
-	    if (ant.geneRole >= 0 && ant.geneRole < 1) {
-	        breedableGeneHistogram[Math.trunc(ant.geneRole * 20)]++;
-	    } else {
-	        breedableGeneHistogram[19]++;
-	    }
-
-	    if (ant.memeRole >= 0 && ant.memeRole < 1) {
-	        breedableMemeHistogram[Math.trunc(ant.memeRole * 20)]++;
-	    } else {
-	        breedableMemeHistogram[19]++;
-	    }
-	}
-
-	if(PRINT_RESULTS) {
-		console.log("breed/forage: " + roleHistogram);
-	}
-	this.roleHistogram.push(roleHistogram);
-	this.forageHistogram.push(forageHistogram);
-	this.roleMemeHistogram.push(roleMemeHistogram);
-	this.forageMemeHistogram.push(forageMemeHistogram);
-
-	this.breedableGeneHistogram.push(breedableGeneHistogram);
-	this.breedableMemeHistogram.push(breedableMemeHistogram);
-}
-
 Mound.prototype.updateBreedableAnts = function() {
 	var breed = [];
-	var breed2 = [];
+	while(this.breedable.length > 0) {this.breedable.shift()} //for various reasons, I have to do this
+	//to let histogram hold on to its reference to this.
+
 
 	// first pass to get better half
 	var cutoff = this.getAverageFitness(this.getBreedableAnts());
@@ -410,11 +315,9 @@ Mound.prototype.updateBreedableAnts = function() {
 	for (var i = 0; i < breed.length; i++) {
 		if (breed[i] !== undefined &&
 			breed[i].overallFitness >= cutoff2) {
-			breed2.push(breed[i]);
+			this.breedable.push(breed[i]);
 		}
 	}
-
-	this.breedable = breed2;
 }
 
 Mound.prototype.getAverageFitness = function(arr) {
