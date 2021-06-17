@@ -1,16 +1,17 @@
 class HistogramNew {
   constructor (
-      game, pointer, arrayPointer, fieldPointer,
+      game, object, HistoryPointer, arrayPointer, fieldPointer,
       x, y,
       sx, sy,
       color, name) {
     Object.assign(this, {
-      game, pointer, arrayPointer, fieldPointer,
+      game, object, HistoryPointer, arrayPointer, fieldPointer,
       x, y,
       sx, sy,
       color, name});
 
-    this.fieldHistory = pointer;
+    this.history = this.object[this.HistoryPointer];
+    this.array = this.object[this.arrayPointer];
 
     //scaling and dimensions.
     this.numBuckets = 20;
@@ -44,19 +45,21 @@ class HistogramNew {
   //incase other classes want access to whats being displayed.
   getIndexAt(x, y) {
     //x, y relative to upperleft corner of this graph.
-    this.lastClick.i = this.fieldHistory.length - this.tickStart - (x/this.width)
-    this.lastClick.j = this.numBuckets - (y/this.height) - 1;
+    // this.lastClick.i = this.object[fieldHistory].length - this.tickStart - (x/this.width)
+    // this.lastClick.j = this.numBuckets - (y/this.height) - 1;
   }
 
   updatePeriod() {
     var newHistogram = [];
+    this.history = this.object[this.HistoryPointer];
+    this.array = this.object[this.arrayPointer];
 
     for(var i = 0; i< this.numBuckets; i++) {
       newHistogram.push(0);
     }
 
-    for (var i = 0; i < this.arrayPointer.length; i++) {
-      var element = this.arrayPointer[i];
+    for (var i = 0; i < this.array.length; i++) {
+      var element = this.array[i];
       if (element[this.fieldPointer] >= 0 && element[this.fieldPointer] < 1) {
 	        newHistogram[Math.trunc(element[this.fieldPointer] * this.numBuckets)]++;
 	    } else {
@@ -64,7 +67,7 @@ class HistogramNew {
 	    }
     }
 
-    this.fieldHistory.push(newHistogram);
+    this.history.push(newHistogram);
     // let mouse = this.game.mouse
     // if(mouse.timer > 0 && mouse.clickX != this.lastClick.x && mouse.clickY != this.lastClick.y
     //   && mouse.clickX > this.x && mouse.clickX < this.x + this.sx
@@ -86,7 +89,7 @@ class HistogramNew {
   drawPeriod(ctx) {
     this.ctx.clearRect(this.x, this.y, this.sx+100, this.sy+20);
 
-    this.present = this.fieldHistory.length - 1;
+    this.present = this.history.length - 1;
     this.start = Math.min(this.present, Math.max(0, this.present - this.tickStart));
     this.end = Math.max(0, this.start - this.numTicks);
     let missingTicks = this.numTicks - (this.start - this.end)
@@ -95,11 +98,11 @@ class HistogramNew {
     let val;
     let offsetY = 2;
     for(var i = this.start; i > this.end; i--) {
-      let sumValue = this.fieldHistory[i].reduce(function (acc, x) {
+      let sumValue = this.history[i].reduce(function (acc, x) {
             return acc + x;
         }, 0);
       for(var j = 0; j < this.numBuckets; j++) {
-        val = this.fieldHistory[Math.max(0,i)][j];
+        val = this.history[Math.max(0,i)][j];
         this.fill(val/sumValue, i-this.end + missingTicks, j, this.width);
 
         if (!SIMPLE_INFO && val != 0 && i == this.start) {
@@ -125,10 +128,10 @@ class HistogramNew {
       let delin = Math.ceil(((this.sx/5)+1)/10)*10;
       let x;
       let y;
-      let dashSize = Math.floor(this.sy/this.numBuckets)/3;
+      let dashSize = Math.floor(this.sy/this.numBuckets/3);
       for(let i = (this.start) - (this.start + this.numForgotten)%delin; i > this.end; i-=delin) {
         x = this.x + (i-this.end)*this.width;
-        if(this.fieldHistory[i][this.numBuckets-1] == 0) {
+        if(this.history[i][this.numBuckets-1] == 0) {
           y = this.y + this.sy
           ctx.fillText(i + this.numForgotten, x - 5 - Math.log10(i+this.numForgotten), y - dashSize);
         } else {
@@ -144,8 +147,8 @@ class HistogramNew {
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(this.x, this.y, this.sx, this.sy);
     ctx.restore();
-    if(this.fieldHistory.length > this.numTicks*1) {
-      this.fieldHistory.shift();
+    if(this.history.length > this.numTicks*1) {
+      this.history.shift();
       this.numForgotten++;
     }
   }

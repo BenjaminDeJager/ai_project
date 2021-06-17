@@ -291,18 +291,18 @@ GameEngine.prototype.setup = function() {
     ]);
     this.addEntity(this.popGraph);
 
-    this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, this.mound.colony, 'geneRole', 800 + 10, 5, 360, 180, [1, 0, 0], "Queen (0) /Worker (19) Gene");
-    //this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, this.mound.colony, 'geneForage', 800 + 10, 210, 360, 180, [0, 1, 0], "Exploit (0) /Explore (19) Gene");
+    this.roleGraph = new HistogramNew(this, this.mound, 'roleHistogram', 'colony', 'geneRole', 800 + 10, 5, 360, 180, [1, 0, 0], "Queen (0) /Worker (19) Gene");
+    //this.forageGraph = new HistogramNew(this, this.mound, 'forageHistogram', 'colony', 'geneForage', 800 + 10, 210, 360, 180, [0, 1, 0], "Exploit (0) /Explore (19) Gene");
     this.addEntity(this.roleGraph);
     //this.addEntity(this.forageGraph);
 
-    this.roleMemeGraph = new HistogramNew(this, this.mound.roleMemeHistogram, this.mound.colony, 'memeRole', 1300 + 10, 5, 360, 180, [1, 0, 0], "Queen (0) /Worker (19) Meme");
-     //this.forageMemeGraph = new HistogramNew(this, this.mound.forageMemeHistogram, this.mound.colony, 'memeForage', 1300 + 10, 210, 360, 180, [0, 1, 0], "Exploit (0) /Explore (19) Meme");
+    this.roleMemeGraph = new HistogramNew(this, this.mound, 'roleMemeHistogram', 'colony', 'memeRole', 1300 + 10, 5, 360, 180, [1, 0, 0], "Queen (0) /Worker (19) Meme");
+     //this.forageMemeGraph = new HistogramNew(this, this.mound, 'forageMemeHistogram', 'colony', 'memeForage', 1300 + 10, 210, 360, 180, [0, 1, 0], "Exploit (0) /Explore (19) Meme");
     this.addEntity(this.roleMemeGraph);
      //this.addEntity(this.forageMemeGraph);
 
-    this.breedableGenes = new HistogramNew(this, this.mound.breedableGeneHistogram, this.mound.breedable, 'geneRole', 800 + 10, 210, 360, 180, [0, 1, 0], "Breedable Genes");
-    this.breedableMemes = new HistogramNew(this, this.mound.breedableMemeHistogram, this.mound.breedable, 'memeRole', 1300 + 10, 210, 360, 180, [0, 1, 0], "Breedable Memes");
+    this.breedableGenes = new HistogramNew(this, this.mound, 'breedableGeneHistogram', 'breedable', 'geneRole', 800 + 10, 210, 360, 180, [0, 1, 0], "Breedable Genes");
+    this.breedableMemes = new HistogramNew(this, this.mound, 'breedableMemeHistogram', 'breedable', 'memeRole', 1300 + 10, 210, 360, 180, [0, 1, 0], "Breedable Memes");
     this.addEntity(this.breedableGenes);
     this.addEntity(this.breedableMemes);
 }

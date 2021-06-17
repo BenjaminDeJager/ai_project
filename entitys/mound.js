@@ -297,9 +297,7 @@ Mound.prototype.canGrow = function() {
 
 Mound.prototype.updateBreedableAnts = function() {
 	var breed = [];
-	while(this.breedable.length > 0) {this.breedable.shift()} //for various reasons, I have to do this
-	//to let histogram hold on to its reference to this.
-
+	var breed2 = [];
 
 	// first pass to get better half
 	var cutoff = this.getAverageFitness(this.getBreedableAnts());
@@ -315,9 +313,10 @@ Mound.prototype.updateBreedableAnts = function() {
 	for (var i = 0; i < breed.length; i++) {
 		if (breed[i] !== undefined &&
 			breed[i].overallFitness >= cutoff2) {
-			this.breedable.push(breed[i]);
+			breed2.push(breed[i]);
 		}
 	}
+	this.breedable = breed2;
 }
 
 Mound.prototype.getAverageFitness = function(arr) {
