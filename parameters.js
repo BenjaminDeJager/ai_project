@@ -41,9 +41,12 @@ var SUM_OR_MAX_FITNESS_TOGGLE = true;
 var ROLE_GENE_TOGGLE = true;
 
 var MEME_TOGGLE = true;
-var SOCIAL_LEARNING = true;
+var MEME_LEARNING = true;
 var ELITE_TEACHERS = true;
-var INDIVIDUAL_LEARNING = true;
+var RANDOM_NUDGE = true;
+var ENVIRONMENT_NUDGE = true;
+var SOCIAL_SELECT = false;
+var ENVIRONMENT_SELECT = false;
 
 var GENE_LIFE_TOGGLE = true;
 var MIN_AGE = 100;
