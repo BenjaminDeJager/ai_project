@@ -463,7 +463,7 @@ Ant.prototype.chooseRole = function() {
     if(MEME_TOGGLE){
         var randomPeer;
 
-        if (SOCIAL_LEARNING) {
+        if (MEME_LEARNING) {
             if (ELITE_TEACHERS) {
                 randomPeer = this.mound.breedable[randomInt(this.mound.breedable.length)];
             } else {
@@ -479,13 +479,19 @@ Ant.prototype.chooseRole = function() {
             }
         }
 
-        if (INDIVIDUAL_LEARNING) {
-            var dev = Math.random() * MAX_DEVIATION;
-            dev = Math.random() >= 0.5 ? dev : -dev;
+        if (RANDOM_NUDGE) {
+            var dev = Math.random() >= 0.5 ? Math.random() * MAX_DEVIATION : -Math.random() * MAX_DEVIATION;
 
             this.memeRole += dev;
-            this.memeRole = this.memeRole > 0 ? this.memeRole < 1 ? this.memeRole : 1 : 0;
         }
+
+        if (ENVIRONMENT_NUDGE) {
+            var dev = !this.mound.canGrow() ? Math.random() * MAX_DEVIATION : -Math.random() * MAX_DEVIATION;
+
+            this.memeRole += dev;
+        }
+
+        this.memeRole = this.memeRole > 0 ? this.memeRole < 1 ? this.memeRole : 1 : 0;
 	}
 
 	if (ROLE_GENE_TOGGLE && Math.random() >= this.memeRole) {  // if we randomly select breeder from our meme
