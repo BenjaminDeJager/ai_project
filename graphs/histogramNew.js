@@ -82,6 +82,7 @@ class HistogramNew{
       for(var j = 0; j < this.numBuckets; j++) {
         val = this.fieldHistory[Math.max(0,i)][j];
         this.fill(val/sumValue, i-this.end + missingTicks, j, this.width);
+
         if (!SIMPLE_INFO && val != 0 && i == this.start) {
           ctx.fillText(j, this.x + this.sx + 4, this.y + this.height*(j+1) - offsetY);
           ctx.fillText((val/sumValue).toFixed(2), this.x + this.sx + 20, this.y + this.height*(j+1) - offsetY);
@@ -102,16 +103,18 @@ class HistogramNew{
 
       this.ctx.font = "10px Courier";
       ctx.beginPath();
-      let delin = Math.round(2*this.sx/3);
+      let delin = Math.ceil(((this.sx/5)+1)/10)*10;
       let x;
       let y;
-      let dashSize = Math.floor(this.sy/this.numBuckets)/2;
-      for(let i = this.start - this.start%delin; i > this.end; i-=delin) {
+      let dashSize = Math.floor(this.sy/this.numBuckets)/3;
+      for(let i = (this.start) - (this.start + this.numForgotten)%delin; i > this.end; i-=delin) {
         x = this.x + (i-this.end)*this.width;
         if(this.fieldHistory[i][this.numBuckets-1] == 0) {
-          y = this.y + this.sy - dashSize
+          y = this.y + this.sy
+          ctx.fillText(i + this.numForgotten, x - 5 - Math.log10(i+this.numForgotten), y - dashSize);
         } else {
-          y = this.y + dashSize
+          y = this.y
+          ctx.fillText(i + this.numForgotten, x - 5 - Math.log10(i+this.numForgotten), y + dashSize);
         }
         ctx.moveTo(x, y-dashSize);
         ctx.lineTo(x, y+dashSize);
@@ -122,7 +125,7 @@ class HistogramNew{
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(this.x, this.y, this.sx, this.sy);
     ctx.restore();
-    if(this.fieldHistory.length > this.numTicks) {
+    if(this.fieldHistory.length > this.numTicks*1) {
       this.fieldHistory.shift();
       this.numForgotten++;
     }
