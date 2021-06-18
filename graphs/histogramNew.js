@@ -111,7 +111,7 @@ class HistogramNew{
         x = this.x + (i-this.end)*this.width;
         if(this.fieldHistory[i][this.numBuckets-1] == 0) {
           y = this.y + this.sy
-          ctx.fillText(i + this.numForgotten, x - 5 - Math.log10(i+this.numForgotten), y - dashSize);
+          ctx.fillText(i + this.numForgotten, x - 5 - 2*Math.log10(i+this.numForgotten), y - dashSize);
         } else {
           y = this.y
           ctx.fillText(i + this.numForgotten, x - 5 - Math.log10(i+this.numForgotten), y + dashSize);
@@ -125,7 +125,7 @@ class HistogramNew{
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(this.x, this.y, this.sx, this.sy);
     ctx.restore();
-    if(this.fieldHistory.length > this.numTicks*1) {
+    if(this.fieldHistory.length > this.numTicks*2) {
       this.fieldHistory.shift();
       this.numForgotten++;
     }

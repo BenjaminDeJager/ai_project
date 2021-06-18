@@ -33,100 +33,145 @@
 // its respective field. when possable LineGraphs should have their
 //updatePeriod's called when the sim's being restarted or otherwise have their
 //tracked field values re-set.
-function LineGraph(game, x, y, xSize, ySize, fieldTuples/*, tickStart, tickEnd*/) {
-  Object.assign(this, {game,
-    x, y,
-    xSize, ySize,
-    fieldTuples/*,
-    tickStart, tickEnd*/});
+class LineGraph{
+  constructor(game, x, y, xSize, ySize, fieldTuples/*, tickStart, tickEnd*/) {
+    Object.assign(this, {game,
+      x, y,
+      xSize, ySize,
+      fieldTuples/*,
+      tickStart, tickEnd*/});
 
-  //remember that fieldtuples should be a array of literals in the form {field, color}
-  //these will be used as the "history" when graphing by pulling the latest value
-  //each updateperiod for each field and then coloring that pixel if "shown" with
-  //the color
-  this.fields = []
-  this.fieldColors = [];
-  this.fieldHistories = [];
-  this.fieldTuples.forEach(field => {
-    this.fields.push(field.pointer); //pointer to the field
-    this.fieldColors.push(field.color); //pointer to the color
-    this.fieldHistories.push(field.history); //probably empty array for history-storage.
+    //remember that fieldtuples should be a array of literals in the form {field, color}
+    //these will be used as the "history" when graphing by pulling the latest value
+    //each updateperiod for each field and then coloring that pixel if "shown" with
+    //the color
+    // this.fields = []
+    // this.fieldColors = [];
+    // this.fieldHistories = [];
+    // this.fieldTuples.forEach(field => {
+    //   this.fields.push(field.pointer); //pointer to the field
+    //   this.fieldColors.push(field.color); //pointer to the color
+    //   this.fieldHistories.push(field.history); //probably empty array for history-storage.
 
-    //as a bonus, because these are all pointers, effectively, caller keeps access
-    //and can change the color of any of these on the fly.
-  });
+      //as a bonus, because these are all pointers, effectively, caller keeps access
+      //and can change the color of any of these on the fly.
+  // });
 
-  this.numFields = this.fieldHistories.length;
-  this.tickHistory = [this.game.clockTick]; //used to store the game-engine ticks on each
-  //updatePeriod call. see updatePeriod() for information.
+    this.numFields = this.fieldTuples.length;
+    this.removeFromWorld = false;
 
-  this.tickStart = 360; //360 ticks behind the present.
-  this.tickEnd = 0; //graph ends at present.
+    this.mound = this.game.mound;
 
-  this.totalTime = 0;
+    this.numTicks = 360;
+    this.tickRight = this.numTicks; //360 ticks behind the present.
+    this.tickLeft = 0; //graph ends at present.
 
-  //the apply method allows for a function to be called across
-  //all values of a given array from a particular reference (being null here)
-  //this.maxVal = Math.max.apply(null, this.fieldHistories);
-  //not sure why we need to be applying Math.max to each empty array however.
-
-  // I don't see much need to make graphs Entitys, but whatever.
-  Entity.call(this, game, x, y, 360, 180);
-}
-
-LineGraph.prototype = new Entity();
-LineGraph.constructor = LineGraph;
-
-LineGraph.prototype.updatePeriod = function() {
-  //go through each field and push the latest value of each field to the top of
-  //the array for that field.
-
-  for(var i = 0; i<this.numFields; i++) {
-    this.fieldHistories[i].push(this.fields[i]);
-    //this feels so wrong, but I think it works?
+    this.totalTime = 0;
+    this.maxVal = 0;
   }
 
+  updatePeriod() {
+    //go through each field and push the latest value of each field to the top of
+    //the array for that field.
+    var currentTuple;
 
-  // we want to store the game-time, or "tick" in which
-  //these values were taken.
-  this.totalTime += this.game.clockTick;
-  this.tickHistory.push(this.game.update);
-  //might run into issues if the game is paused.
-  //might need testing for that and add second timer.
+    for(var i = 0; i < this.numFields; i++) {
+      currentTuple = this.fieldTuples[i];
+      currentTuple.history.push(currentTuple.pointer);
+    }
+    this.updateMax();
+  }
+
+  drawPeriod(ctx) {
+    if(this.numFields > 0 && this.fieldTuples[0].history.length > 1){
+      var currentTuple;
+      var history;
+      ctx.clearRect(this.x,this.y,this.xSize+20,this.ySize+20);
+      for(var i = 0; i < this.numFields; i++) {
+        currentTuple = this.fieldTuples[i];
+        history = currentTuple.history;
+
+        ctx.save();
+        ctx.strokeStyle = currentTuple.color;
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        var xPos = this.x;
+        var yPos = this.mound.tick > TICK_DISPLAY ? this.y+this.ySize-Math.floor(history[this.mound.tick-TICK_DISPLAY]/this.maxVal*this.ySize)
+                        : this.y+this.ySize-Math.floor(history[0]/this.maxVal*this.ySize);
+        ctx.moveTo(xPos, yPos);
+        var length = this.mound.tick > TICK_DISPLAY ?
+               TICK_DISPLAY : history.length;
+        for (var i = 1; i < length; i++) {
+          var index = this.mound.tick > TICK_DISPLAY ?
+                this.mound.tick-TICK_DISPLAY-1+i : i;
+          xPos++;
+          yPos = this.y+this.ySize-Math.floor(history[index]/this.maxVal*this.ySize);
+          if (yPos <= 0) {
+            yPos = 0;
+          }
+
+          ctx.lineTo(xPos, yPos);
+        }
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.strokeStyle = currentTuple.color;
+        ctx.fillStyle = currentTuple.color;
+        ctx.fillText((i + ", " + history[history.length-1]), this.x+this.xSize + 80, yPos + 10);
+
+        var firstTick = 0;
+        firstTick = this.mound.tick > TICK_DISPLAY ? this.mound.tick - TICK_DISPLAY : 0;
+        ctx.fillStyle = "#000000";
+        ctx.fillText(firstTick, this.x + 15, this.y+this.ySize+10);
+        ctx.textAlign = "right";
+        ctx.fillText(this.mound.tick-1, this.x+this.xSize-5, this.y+this.ySize+10);
+        ctx.restore();
+      }
+
+      ctx.fillStyle = currentTuple.color;
+      ctx.fillText((history[history.length-1]), this.x+this.xSize + 80, yPos + 10);
+    }
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(this.x, this.y, this.xSize, this.ySize);
+  }
+
+  updateMax() {
+    console.log("hi");
+  	var tick = this.mound.tick;
+    this.sliceArray = [];
+
+    for(var i = 0; i < this.numFields; i++) {
+      this.sliceArray.push(this.fieldTuples[i].history.slice(tick-TICK_DISPLAY));
+    }
+
+    this.maxVal = this.sliceArray.reduce(function(a, b) {
+        return Math.max(...a, ...b);
+    });
+  	// if (tick > TICK_DISPLAY) {
+    //   //the apply method allows for a function to be called across
+    //   //all values of a given array from a particular reference (being null here)
+    //
+    //   //first slice off (tick-TICK_DISPLAY)
+    //   var sliceArray = [];
+    //
+    //   for(var i = 0; i < this.fieldHistories.length; i++) {
+    //     sliceArray.push(this.fieldHistories[i].slice(tick-TICK_DISPLAY));
+    //   }
+    //
+    //   this.maxVal = sliceArray.reduce(function(a, b) {
+    //       return Math.max(a, b);
+    //   });
+    // } else {
+    //   this.maxVal = sliceArray.reduce(function(a, b) {
+    //       return Math.max(a, b);
+    //   });
+    // }
+
+  }
+
+  //I see no reason to update or draw every game tick, only when visuals change.
+  update() {};
+  draw(ctx) {};
 }
-
-LineGraph.prototype.drawPeriod = function(ctx) {
-  // this.updateMax();
-  // if(this.fieldHistories.size > 0
-  //   && this.fieldHistories.values().next().length > 1){
-  //   // this.fieldHistories.forEach((fieldHistory, fieldPointer) => {
-  //   //   this.ctx.strokeStyle = this.colors[]
-  //   // });
-  //
-  // }
-}
-
-//
-LineGraph.prototype.updateMax = function() {
-	var tick = this.game
-	if (tick > TICK_DISPLAY) {
-    //the apply method allows for a function to be called across
-    //all values of a given array from a particular reference (being null here)
-
-    //first slice off (tick-TICK_DISPLAY)
-
-		var recentAnt = this.antData.slice(tick-TICK_DISPLAY);
-		var recentLarva = this.larvaData.slice(tick-TICK_DISPLAY);
-
-		this.maxVal = Math.max(...recentAnt,
-							   ...recentLarva);
-	} else {
-		this.maxVal = Math.max(...this.antData,
-							   ...this.larvaData);
-	}
-
-}
-
-//I see no reason to update or draw every game tick, only when visuals change.
-LineGraph.prototype.update = function () {};
-LineGraph.prototype.draw = function (ctx) {};

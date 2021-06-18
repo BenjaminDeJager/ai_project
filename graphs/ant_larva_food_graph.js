@@ -1,6 +1,6 @@
 function Graph(game, mound) {
 	this.xSize = 360;
-	this.ySize = 175;
+	this.ySize = 180;
 	this.ctx = game.ctx;
 	this.mound = mound;
 	this.game = game;
