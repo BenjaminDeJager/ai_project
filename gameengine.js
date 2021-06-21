@@ -299,6 +299,30 @@ GameEngine.prototype.setup = function() {
   ]);
   this.addEntity(this.popGraph);
 
+  this.foodGraph = new LineGraph(this,
+    1300 + 10, 360 + 40 + 210, //location of top left corner
+    360, 180, //xSize, ySize
+    [
+      { pointer: 'foodStorage',
+        color: "blue",
+        history: [],
+        name: 'stored'
+      },
+      {
+        pointer: 'desiredFood',
+        color: "red",
+        history: [],
+        name: 'desired'
+      },
+      {
+        pointer: 'ungatheredFood',
+        color: "black",
+        history: [],
+        name: 'ungathered'
+      }
+  ]);
+  this.addEntity(this.foodGraph);
+
   this.roleGraph = new HistogramNew(this, this.mound.roleHistogram, 800 + 10, 5, 360, 180, [1, 0, 0], "Queen (0) /Worker (19) Gene");
   //this.forageGraph = new HistogramNew(this, this.mound.forageHistogram, 800 + 10, 210, 360, 180, [0, 1, 0], "Exploit (0) /Explore (19) Gene");
   this.addEntity(this.roleGraph);

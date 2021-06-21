@@ -20,13 +20,13 @@ Graph.prototype.update = function () {
 }
 
 Graph.prototype.updatePeriod = function() {
-	this.ungatheredFoodData.push(Math.round(this.game.tiles.reduce(function (accumulator, currentValue) {
-	  return accumulator + currentValue.foodLevel/EAT_AMOUNT;
-	}, 0)));
-
-	this.foodData.push(Math.floor(this.mound.foodStorage/EAT_AMOUNT));
-	this.wantFood.push(Math.floor((this.mound.larvaCount+this.mound.antCount)*2));
-	this.updateMax();
+	// this.ungatheredFoodData.push(Math.round(this.game.tiles.reduce(function (accumulator, currentValue) {
+	//   return accumulator + currentValue.foodLevel/EAT_AMOUNT;
+	// }, 0)));
+	//
+	// this.foodData.push(Math.floor(this.mound.foodStorage/EAT_AMOUNT));
+	// this.wantFood.push(Math.floor((this.mound.larvaCount+this.mound.antCount)*2));
+	// this.updateMax();
 }
 
 Graph.prototype.draw = function (ctx) {
@@ -34,7 +34,7 @@ Graph.prototype.draw = function (ctx) {
 }
 
 Graph.prototype.drawPeriod = function(ctx) {
-
+	return;
 	if (this.ungatheredFoodData.length > 1) {
 
 		//harvestable food.

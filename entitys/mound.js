@@ -8,6 +8,8 @@ function Mound(game, xPos, yPos) {
 	this.antCount = 0;
 	this.larvaCount = 0;
 	this.breedableCount = 0;
+	this.desiredFood = Math.floor((this.larvaCount+this.antCount)*2);
+	this.ungatheredFood = 0;
 
 	this.foodStorage = 0;
 	this.lifeTimeCount = 0;
@@ -126,6 +128,11 @@ Mound.prototype.updatePeriod = function() {
 	this.updateGeneration();
 	this.graph1.updatePeriod();
 	this.graph2.updatePeriod();
+
+	this.ungatheredFood = Math.round(this.game.tiles.reduce(function (accumulator, currentValue) {
+	  return accumulator + currentValue.foodLevel/EAT_AMOUNT;
+	}, 0));
+	this.desiredFood = Math.floor((this.larvaCount+this.antCount)*2);
 
 	this.calculateAvgAges();
 
