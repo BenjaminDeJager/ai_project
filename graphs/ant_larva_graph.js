@@ -59,7 +59,7 @@ Graph2.prototype.drawPeriod = function(ctx) {
 
 		this.ctx.strokeStyle = "#00BB00";
 		this.ctx.fillStyle = "#00BB00";
-		this.ctx.fillText(("ant:  "+this.antData[this.antData.length-1]), this.x+this.xSize + 80, yPos + 10);
+		this.ctx.fillText(("ant:  "+this.antData[this.antData.length-1]), this.x+this.xSize + 50, yPos + 10);
 
 		//larva
 		this.ctx.strokeStyle = "#BB0000";
@@ -86,7 +86,7 @@ Graph2.prototype.drawPeriod = function(ctx) {
 
 		this.ctx.strokeStyle = "#BB0000";
 		this.ctx.fillStyle = "#BB0000";
-		this.ctx.fillText(("larva:"+this.larvaData[this.larvaData.length-1]), this.x+this.xSize + 80, yPos + 10);
+		this.ctx.fillText(("larva:"+this.larvaData[this.larvaData.length-1]), this.x+this.xSize + 50, yPos + 10);
 
 		var firstTick = 0;
 		firstTick = this.mound.tick > TICK_DISPLAY ? this.mound.tick - TICK_DISPLAY : 0;
