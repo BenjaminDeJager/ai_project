@@ -279,14 +279,22 @@ GameEngine.prototype.setup = function() {
     360, 180, //xSize, ySize
     [
       { pointer: 'antCount',
-        color: "red",
-        history: [] //pull array from a "top-level" history array (in mound atm, move to game engine?)
+        color: "green",
+        history: [], //pull array from a "top-level" history array (in mound atm, move to game engine?)
         //at end of experiment, a "data manager" can manage the storage of data in server.
+        name: 'ants'
       },
       {
         pointer: 'larvaCount',
-        color: "green",
-        history: []
+        color: "red",
+        history: [],
+        name: 'larva'
+      },
+      {
+        pointer: 'breedableCount',
+        color: "blue",
+        history: [],
+        name: 'breedable'
       }
   ]);
   this.addEntity(this.popGraph);

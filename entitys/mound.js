@@ -7,6 +7,7 @@ function Mound(game, xPos, yPos) {
 
 	this.antCount = 0;
 	this.larvaCount = 0;
+	this.breedableCount = 0;
 
 	this.foodStorage = 0;
 	this.lifeTimeCount = 0;
@@ -24,7 +25,7 @@ function Mound(game, xPos, yPos) {
 
 	this.breedableGeneHistogram = [];
 	this.breedableMemeHistogram = [];
-    
+
 	this.deathAges = {
 		breeders: [],
 		generalists: [],
@@ -413,7 +414,7 @@ Mound.prototype.updateBreedableAnts = function() {
 			breed2.push(breed[i]);
 		}
 	}
-
+	this.breedableCount = breed2.length;
 	this.breedable = breed2;
 }
 

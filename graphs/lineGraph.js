@@ -130,10 +130,10 @@ class LineGraph{
         firstTick = this.mound.tick > TICK_DISPLAY ? this.mound.tick - TICK_DISPLAY : 0;
         ctx.fillStyle = "#000000";
         ctx.fillText(firstTick, this.x + 15, this.y+this.ySize+10);
+        ctx.fillStyle = currentTuple.color;
+        ctx.fillText(currentTuple.name + ": " + (history[history.length-1]), this.x+this.xSize + 5, yPos + 10);
         ctx.textAlign = "right";
         ctx.fillText(this.mound.tick-1, this.x+this.xSize-5, this.y+this.ySize+10);
-        ctx.fillStyle = currentTuple.color;
-        ctx.fillText((history[history.length-1]), this.x+this.xSize + 80, yPos + 10);
         ctx.restore();
       }
     }
