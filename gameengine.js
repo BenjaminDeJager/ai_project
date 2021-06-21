@@ -278,13 +278,13 @@ GameEngine.prototype.setup = function() {
     1300 + 10, 180 + 20 + 210, //location of top left corner
     360, 180, //xSize, ySize
     [
-      { pointer: this.mound.antCount,
+      { pointer: 'antCount',
         color: "red",
         history: [] //pull array from a "top-level" history array (in mound atm, move to game engine?)
         //at end of experiment, a "data manager" can manage the storage of data in server.
       },
       {
-        pointer: this.mound.larvaCount,
+        pointer: 'larvaCount',
         color: "green",
         history: []
       }

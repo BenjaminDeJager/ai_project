@@ -77,21 +77,26 @@ class LineGraph{
 
     for(var i = 0; i < this.numFields; i++) {
       currentTuple = this.fieldTuples[i];
-      currentTuple.history.push(currentTuple.pointer);
+      currentTuple.history.push(this.mound[currentTuple.pointer]);
     }
     this.updateMax();
   }
 
   drawPeriod(ctx) {
-    if(this.numFields > 0 && this.fieldTuples[0].history.length > 1){
-      var currentTuple;
-      var history;
-      ctx.clearRect(this.x,this.y,this.xSize+20,this.ySize+20);
-      for(var i = 0; i < this.numFields; i++) {
-        currentTuple = this.fieldTuples[i];
+    if(this.numFields <= 0 ) {
+      return;
+    }
+
+    var currentTuple;
+    var history;
+    ctx.clearRect(this.x,this.y,this.xSize+880,this.ySize+10);
+    for(var i = 0; i < this.numFields; i++) {
+      console.log(i);
+      currentTuple = this.fieldTuples[i];
+      if(currentTuple.history.length > 1) {
+        ctx.save();
         history = currentTuple.history;
 
-        ctx.save();
         ctx.strokeStyle = currentTuple.color;
         ctx.lineWidth = 1;
 
@@ -102,9 +107,10 @@ class LineGraph{
         ctx.moveTo(xPos, yPos);
         var length = this.mound.tick > TICK_DISPLAY ?
                TICK_DISPLAY : history.length;
-        for (var i = 1; i < length; i++) {
-          var index = this.mound.tick > TICK_DISPLAY ?
-                this.mound.tick-TICK_DISPLAY-1+i : i;
+        var index;
+        for (var j = 1; j < length; j++) {
+          index = this.mound.tick > TICK_DISPLAY ?
+                this.mound.tick-TICK_DISPLAY-1+j : j;
           xPos++;
           yPos = this.y+this.ySize-Math.floor(history[index]/this.maxVal*this.ySize);
           if (yPos <= 0) {
@@ -118,7 +124,7 @@ class LineGraph{
 
         ctx.strokeStyle = currentTuple.color;
         ctx.fillStyle = currentTuple.color;
-        ctx.fillText((i + ", " + history[history.length-1]), this.x+this.xSize + 80, yPos + 10);
+        // ctx.fillText((i + ", " + history[history.length-1]), this.x+this.xSize + 80, yPos + 10);
 
         var firstTick = 0;
         firstTick = this.mound.tick > TICK_DISPLAY ? this.mound.tick - TICK_DISPLAY : 0;
@@ -126,11 +132,10 @@ class LineGraph{
         ctx.fillText(firstTick, this.x + 15, this.y+this.ySize+10);
         ctx.textAlign = "right";
         ctx.fillText(this.mound.tick-1, this.x+this.xSize-5, this.y+this.ySize+10);
+        ctx.fillStyle = currentTuple.color;
+        ctx.fillText((history[history.length-1]), this.x+this.xSize + 80, yPos + 10);
         ctx.restore();
       }
-
-      ctx.fillStyle = currentTuple.color;
-      ctx.fillText((history[history.length-1]), this.x+this.xSize + 80, yPos + 10);
     }
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 1;
@@ -138,37 +143,18 @@ class LineGraph{
   }
 
   updateMax() {
-    console.log("hi");
-  	var tick = this.mound.tick;
-    this.sliceArray = [];
-
-    for(var i = 0; i < this.numFields; i++) {
-      this.sliceArray.push(this.fieldTuples[i].history.slice(tick-TICK_DISPLAY));
+    var temp = 0;
+    var tick = this.mound.tick;
+    if (tick > TICK_DISPLAY) {
+      for(var i = 0; i < this.numFields; i++) {
+        temp = Math.max(...this.fieldTuples[i].history.slice(tick-TICK_DISPLAY), temp);
+      }
+    } else {
+      for(var i = 0; i < this.numFields; i++) {
+        temp = Math.max(...this.fieldTuples[i].history, temp);
+      }
     }
-
-    this.maxVal = this.sliceArray.reduce(function(a, b) {
-        return Math.max(...a, ...b);
-    });
-  	// if (tick > TICK_DISPLAY) {
-    //   //the apply method allows for a function to be called across
-    //   //all values of a given array from a particular reference (being null here)
-    //
-    //   //first slice off (tick-TICK_DISPLAY)
-    //   var sliceArray = [];
-    //
-    //   for(var i = 0; i < this.fieldHistories.length; i++) {
-    //     sliceArray.push(this.fieldHistories[i].slice(tick-TICK_DISPLAY));
-    //   }
-    //
-    //   this.maxVal = sliceArray.reduce(function(a, b) {
-    //       return Math.max(a, b);
-    //   });
-    // } else {
-    //   this.maxVal = sliceArray.reduce(function(a, b) {
-    //       return Math.max(a, b);
-    //   });
-    // }
-
+    this.maxVal = temp;
   }
 
   //I see no reason to update or draw every game tick, only when visuals change.
