@@ -337,19 +337,19 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 3; i++) {
-		settings.push({
-			roleToggle: true,
-			scatteredOrDense: true,
-			extremeGenes: false,
-			breedLife: false,
-			breedSpeed: false,
-			foodCarry: false,
-			energy: false,
-			fWeight: 1,
-			bWeight: 1
-		});
-	}
+	//for (var i = 0; i < 3; i++) {
+	//	settings.push({
+	//		roleToggle: true,
+	//		scatteredOrDense: true,
+	//		extremeGenes: false,
+	//		breedLife: false,
+	//		breedSpeed: false,
+	//		foodCarry: false,
+	//		energy: false,
+	//		fWeight: 1,
+	//		bWeight: 1
+	//	});
+	//}
 	// for (var i = 0; i < 9; i++) {
 	// 	settings.push({
 	// 		roleToggle: true,
@@ -364,18 +364,18 @@ GameEngine.prototype.setSettings = function() {
 	// 	});
 	// }
 
-	settings[0].foodCarry = true;
-	settings[0].energy = true;
-	settings[0].bWeight = 4;
-	settings[0].fWeight = 1;
+	//settings[0].foodCarry = true;
+	//settings[0].energy = true;
+	//settings[0].bWeight = 4;
+	//settings[0].fWeight = 1;
 
-	settings[1].energy = true;
-	settings[1].bWeight = 3;
-	settings[1].fWeight = 1;
+	//settings[1].energy = true;
+	//settings[1].bWeight = 3;
+	//settings[1].fWeight = 1;
 
-	settings[2].foodCarry = true;
-	settings[2].bWeight = 9;
-	settings[2].fWeight = 2;
+	//settings[2].foodCarry = true;
+	//settings[2].bWeight = 9;
+	//settings[2].fWeight = 2;
   
 	// settings[0].roleToggle = false;
   //

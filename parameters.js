@@ -40,25 +40,29 @@ var RANDOM_OR_QUEUE_TOGGLE = true;
 var SUM_OR_MAX_FITNESS_TOGGLE = true;
 var ROLE_GENE_TOGGLE = true;
 
-var MEME_TOGGLE = true;
-var MEME_LEARNING = true;
+var MEME_TOGGLE = false;
+var MEME_LEARNING = false;
 var ELITE_TEACHERS = true;
-var RANDOM_NUDGE = true;
-var ENVIRONMENT_NUDGE = true;
+var RANDOM_NUDGE = false;
+var ENVIRONMENT_NUDGE = false;
+var EXPERIENCE_NUDGE = false;
+var RANDOM_SELECT = false;
 var SOCIAL_SELECT = false;
-var ENVIRONMENT_SELECT = false;
+var ENVIRONMENT_SELECT = true;
 
 var GENE_LIFE_TOGGLE = true;
 var MIN_AGE = 100;
-var MIN_CHANCE_TO_DIE = 0.001;
-var MAX_CHANCE_TO_DIE = 0.004;
+var MIN_CHANCE_TO_DIE = 0.0001;
+var MAX_CHANCE_TO_DIE = 0.01;
+var OUTSIDE_DANGEROUS = true;
+var OUTSIDE_CHANCE_TO_DIE = 0.001;
 
 var GENE_BREED_SPEED_TOGGLE = true;
 var MAX_LAY_TIME = 100;
-var MIN_LAY_TIME = 10;
+var MIN_LAY_TIME = 1;
 
 var GENE_FOOD_CARRY_TOGGLE = true;
-var MAX_ANT_FOOD = 10;
+var MAX_ANT_FOOD = 100;
 var MIN_ANT_FOOD = 1;
 
 var GENE_ENERGY_TOGGLE = true;

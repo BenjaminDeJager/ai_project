@@ -274,6 +274,8 @@ Mound.prototype.spawnAnt = function() {
 Mound.prototype.removeAnt = function(ant, reason) {
 	var colIndex = this.colony.indexOf(ant);
 	this.colony.splice(colIndex, 1);
+	colIndex = this.standby.indexOf(ant);
+	if (colIndex >= 0) this.standby.splice(colIndex, 1);
 	this.game.removeEntity(ant);
 	this.antCount--;
 }
@@ -291,6 +293,11 @@ Mound.prototype.removeLarva = function(larva) {
 	this.game.removeEntity(larva);
 	this.larvaCount--;
 }
+
+Mound.prototype.getFoodPopRatio = function () {
+    var popFactor = 2*EAT_AMOUNT*(this.larvaCount + this.antCount);
+    return (this.foodStorage - popFactor)/popFactor;
+};
 
 Mound.prototype.canGrow = function() {
 	return this.foodStorage > ((this.larvaCount+this.antCount)*EAT_AMOUNT*2) ||

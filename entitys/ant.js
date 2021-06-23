@@ -16,7 +16,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.totalOffspring = 0;
 	this.hunger = 0;
 	this.action = OUTBOUND;
-	this.role = EXPLOIT;
+	this.role = INTERIM;
 	this.tiles = tiles;
 	this.peers = peers;
 	this.mound = mound;
@@ -65,9 +65,11 @@ Ant.prototype = new Entity();
 Ant.prototype.constructor = Ant;
 
 Ant.prototype.update = function() {
-	if (Math.random() < this.deathChance && this.age > MIN_AGE) {
-		this.die(DEATH_AGE);
-	} else if (this.role === STANDBY) {
+    if (Math.random() < this.deathChance && this.age > MIN_AGE) {
+        this.die(DEATH_AGE);
+    } else if (OUTSIDE_DANGEROUS && Math.random() < OUTSIDE_CHANCE_TO_DIE && (this.role === EXPLORE || this.role === EXPLOIT)) {
+        this.die(DEATH_AGE);
+    } else if (this.role === STANDBY) {
 		this.standbyCounter++;
 	} else if (this.role === EGG_DOWN_TIME) {
 		if (this.layTimer >= this.layTime) {
@@ -494,16 +496,56 @@ Ant.prototype.chooseRole = function() {
         this.memeRole = this.memeRole > 0 ? this.memeRole < 1 ? this.memeRole : 1 : 0;
 	}
 
-	if (ROLE_GENE_TOGGLE && Math.random() >= this.memeRole) {  // if we randomly select breeder from our meme
-		this.attemptBreed();
-	} else if (!ROLE_GENE_TOGGLE && Math.random() >= 0.5) { // or with a coin flip
-		this.attemptBreed();
-	} else { // forage otherwise
-		this.forage();
-	}
+    var random = false;
+    if (SOCIAL_SELECT) {
+        if (ELITE_TEACHERS) {
+            randomPeer = this.mound.breedable[randomInt(this.mound.breedable.length)];
+        } else {
+            randomPeer = this.peers[Math.round(Math.random() * this.peers.length)];
+        }
+
+        if (randomPeer && (randomPeer.role === LAY_EGG || randomPeer.role === EGG_DOWN_TIME || randomPeer.role === STANDBY)) {
+            this.attemptBreed();
+        } else if (randomPeer && (randomPeer.role === EXPLORE || randomPeer.role === EXPLOIT)) {
+            this.forage();
+        } else {
+            random = true;
+        }
+    }
+
+    if (ENVIRONMENT_SELECT) {
+        var environmentalStimuli = this.mound.getFoodPopRatio();
+
+        if (environmentalStimuli < this.memeRole)
+            this.forage()
+        else
+            this.attemptBreed();
+    }
+
+    if (RANDOM_SELECT || random) {
+        if (ROLE_GENE_TOGGLE) {
+            if (Math.random() >= this.memeRole) {
+                this.attemptBreed();
+            } else {
+                this.forage();
+            }
+        } else {
+            if (Math.random() >= 0.5) {
+                this.attemptBreed();
+            } else {
+                this.forage();
+            }
+        }
+    }
 }
 
-Ant.prototype.attemptBreed = function() {
+Ant.prototype.attemptBreed = function () {
+    if (EXPERIENCE_NUDGE) {
+        var dev = -Math.random() * MAX_DEVIATION;
+
+        this.memeRole += dev;
+        this.memeRole = this.memeRole > 0 ? this.memeRole < 1 ? this.memeRole : 1 : 0;
+    }
 	if (BREEDER_STANDBY) {
 		if (this.hunger >= HUNGER_THRESHHOLD) {
 			this.eat();
@@ -519,7 +561,13 @@ Ant.prototype.attemptBreed = function() {
 	}
 }
 
-Ant.prototype.forage = function() {
+Ant.prototype.forage = function () {
+    if (EXPERIENCE_NUDGE) {
+        var dev = Math.random() * MAX_DEVIATION;
+
+        this.memeRole += dev;
+        this.memeRole = this.memeRole > 0 ? this.memeRole < 1 ? this.memeRole : 1 : 0;
+    }
 	if (Math.random() >= this.geneForage) {
 		this.role = EXPLOIT;
 	} else {
