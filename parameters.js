@@ -40,19 +40,19 @@ var RANDOM_OR_QUEUE_TOGGLE = true;
 var SUM_OR_MAX_FITNESS_TOGGLE = true;
 var ROLE_GENE_TOGGLE = true;
 
-var MEME_TOGGLE = false;
-var MEME_LEARNING = false;
+var MEME_TOGGLE = true;
+var MEME_LEARNING = true;
 var ELITE_TEACHERS = true;
-var RANDOM_NUDGE = false;
-var ENVIRONMENT_NUDGE = false;
-var EXPERIENCE_NUDGE = false;
+var RANDOM_NUDGE = true;
+var ENVIRONMENT_NUDGE = true;
+var EXPERIENCE_NUDGE = true;
 var RANDOM_SELECT = false;
 var SOCIAL_SELECT = false;
 var ENVIRONMENT_SELECT = true;
 
 var GENE_LIFE_TOGGLE = true;
 var MIN_AGE = 100;
-var MIN_CHANCE_TO_DIE = 0.0001;
+var MIN_CHANCE_TO_DIE = 0.001;
 var MAX_CHANCE_TO_DIE = 0.01;
 var OUTSIDE_DANGEROUS = true;
 var OUTSIDE_CHANCE_TO_DIE = 0.001;
@@ -90,7 +90,7 @@ var HUNGER_THRESHHOLD = 250;
 
 var EAT_AMOUNT = 1;
 var MUTATION_RATE = 0.05;
-var MAX_DEVIATION = 0.1;
+var MAX_DEVIATION = 0.05;
 
 var OUTBOUND = 0;
 var INBOUND = 1;

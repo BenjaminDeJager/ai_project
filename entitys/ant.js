@@ -461,8 +461,8 @@ Ant.prototype.die = function(reason) {
 	this.mound.removeAnt(this, reason);
 }
 
-Ant.prototype.chooseRole = function() {
-    if(MEME_TOGGLE){
+Ant.prototype.chooseRole = function () {
+    if (MEME_TOGGLE) {
         var randomPeer;
 
         if (MEME_LEARNING) {
@@ -488,13 +488,15 @@ Ant.prototype.chooseRole = function() {
         }
 
         if (ENVIRONMENT_NUDGE) {
-            var dev = !this.mound.canGrow() ? Math.random() * MAX_DEVIATION : -Math.random() * MAX_DEVIATION;
-
+            var environmentalStimuli = this.mound.getFoodPopRatio();
+            var range = Math.abs(environmentalStimuli - this.memeRole);
+            var dev = this.memeRole > environmentalStimuli ? -Math.random() * Math.min(MAX_DEVIATION, range) : Math.random() * Math.min(MAX_DEVIATION, range);
+         
             this.memeRole += dev;
         }
 
         this.memeRole = this.memeRole > 0 ? this.memeRole < 1 ? this.memeRole : 1 : 0;
-	}
+    }
 
     var random = false;
     if (SOCIAL_SELECT) {
@@ -523,21 +525,21 @@ Ant.prototype.chooseRole = function() {
     }
 
     if (RANDOM_SELECT || random) {
-        if (ROLE_GENE_TOGGLE) {
-            if (Math.random() >= this.memeRole) {
-                this.attemptBreed();
-            } else {
-                this.forage();
-            }
+        if (Math.random() >= this.memeRole) {
+            this.attemptBreed();
         } else {
-            if (Math.random() >= 0.5) {
-                this.attemptBreed();
-            } else {
-                this.forage();
-            }
+            this.forage();
         }
     }
-}
+
+    if (ROLE_GENE_TOGGLE) {
+        if (Math.random() >= 0.5) {
+            this.attemptBreed();
+        } else {
+            this.forage();
+        }
+    }
+};
 
 Ant.prototype.attemptBreed = function () {
     if (EXPERIENCE_NUDGE) {

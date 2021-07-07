@@ -92,7 +92,7 @@ GameEngine.prototype.init = function (ctx) {
     };
     this.runNum = 0;
     document.getElementById("seasonDiv").innerHTML = "Season 1<br />" +
-	"<input type='text' id='seasonLength1' value='1000'/>Length<br />" +
+	"<input type='text' id='seasonLength1' value='100000'/>Length<br />" +
 	"<input type='text' id='foodRegenRate1' value='0'/>Food Regen Rate<br />" +
 	"<input type='text' id='foodRegenAmount1' value='0'/>Food Regen Amount<br />" +
 	"<input type='text' id='foodReplenishRate1' value='0'/>Food Replenish Rate<br />" +
@@ -121,6 +121,17 @@ GameEngine.prototype.setParameters = function() {
 	DRAW_PERIOD = parseInt(document.getElementById("drawPeriod").value);
 	MAX_RUN_COUNT = parseInt(document.getElementById("runCount").value);
 
+    // social
+
+	MEME_TOGGLE = document.getElementById("memesOn").checked;
+	MEME_LEARNING = document.getElementById("socialNudge").checked;;
+	RANDOM_NUDGE = document.getElementById("randomNudge").checked;;
+	ENVIRONMENT_NUDGE = document.getElementById("envNudge").checked;;
+	EXPERIENCE_NUDGE = document.getElementById("expNudge").checked;;
+	RANDOM_SELECT = document.getElementById("probabilisticSelect").checked;;
+	ENVIRONMENT_SELECT = document.getElementById("deterministicSelect").checked;;
+	ROLE_GENE_TOGGLE = document.getElementById("geneRoleToggle").checked;
+
 	// mound
 	BREED_AGE = parseInt(document.getElementById("breedAge").value);
 	BREED_AGE_TOGGLE = document.getElementById("breedAgeToggle").checked;
@@ -130,7 +141,6 @@ GameEngine.prototype.setParameters = function() {
 	EXTREME_GENE_TOGGLE = document.getElementById("geneToggle").checked;
 	RANDOM_OR_QUEUE_TOGGLE = document.getElementById("randomOrQueueToggle").checked;
 	SUM_OR_MAX_FITNESS_TOGGLE = document.getElementById("sumOrMaxToggle").checked;
-	ROLE_GENE_TOGGLE = document.getElementById("geneRoleToggle").checked;
 
 	GENE_LIFE_TOGGLE = document.getElementById("geneLifeToggle").checked;
 	MIN_AGE = parseInt(document.getElementById("minAge").value);
