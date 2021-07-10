@@ -122,10 +122,10 @@ class HistogramNew{
     ctx.strokeStyle = "#000000";
     ctx.strokeRect(this.x, this.y, this.sx, this.sy);
     ctx.restore();
-    if(this.fieldHistory.length > this.numTicks) {
-      this.fieldHistory.shift();
-      this.numForgotten++;
-    }
+    //if(this.fieldHistory.length > this.numTicks) {
+    //  this.fieldHistory.shift();
+    //  this.numForgotten++;
+    //}
   }
 
   fill(value, x, y, thick, highlight) {

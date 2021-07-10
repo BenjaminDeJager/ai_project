@@ -20,12 +20,10 @@ Graph.prototype.update = function () {
 }
 
 Graph.prototype.updatePeriod = function() {
-	this.ungatheredFoodData.push(Math.round(this.game.tiles.reduce(function (accumulator, currentValue) {
-	  return accumulator + currentValue.foodLevel/EAT_AMOUNT;
-	}, 0)));
+	this.ungatheredFoodData.push(this.mound.idleCount);
 
-	this.foodData.push(Math.floor(this.mound.foodStorage/EAT_AMOUNT));
-	this.wantFood.push(Math.floor((this.mound.larvaCount+this.mound.antCount)*2));
+	this.foodData.push(this.mound.workerCount);
+	this.wantFood.push(this.mound.breederCount);
 	this.updateMax();
 }
 
